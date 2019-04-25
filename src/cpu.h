@@ -3,5 +3,6 @@
 
 void InitializeCPU();
 void ExecuteNextOpCode();
+void DebugTranslateSingleInstruction(unsigned short opcode);
 
 #endif

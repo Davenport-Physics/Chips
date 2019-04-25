@@ -8,6 +8,7 @@ int main(int argc, char **argv)
 
     InitializeMemory(argc, argv);
     InitializeCPU();
+    DebugTranslateSingleInstruction(0x7000);
 
 }
 
