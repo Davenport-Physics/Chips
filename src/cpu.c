@@ -23,39 +23,64 @@ typedef enum BOOL {
 
 } BOOL;
 
-BOOL StubOpcode(unsigned short , size_t);
 BOOL First(unsigned short opcode, size_t opcodes_idx);
 BOOL ExactOpcode(unsigned short opcode, size_t opcodes_idx);
 BOOL FirstFourth(unsigned short opcode, size_t opcodes_idx);
 BOOL FirstThirdFourth(unsigned short opcode, size_t opcodes_idx);
 
+BOOL StubOpcode(unsigned short , size_t);
+
+/* Register functions */
+void ClearScreen(unsigned short);
+void Return(unsigned short);
+void CallProg(unsigned short);
+void Jump(unsigned short);
+void CallSubroutine(unsigned short);
+
+void Skip_IfVx_EqualNN(unsigned short);
+void Skip_IfVx_DoesNotEqualNN(unsigned short);
+void Skip_IfVx_Equal_Vy(unsigned short);
+
+void Set_Vx_To_NN(unsigned short);
+void Add_NN_To_Vx(unsigned short);
+
+void Vx_ToVy(unsigned short);
+void Vx_To_VxOrVy(unsigned short);
+void Vx_To_VxAndVy(unsigned short);
+void Vx_To_VxXorVy(unsigned short);
+
+void Add_Vy_To_VxCarry(unsigned short);
+void Sub_Vy_From_VxBorrow(unsigned short);
+void Store_Least_Sig_Shift_Right(unsigned short);
+
+
 void SetupNextTranslation(unsigned short);
 
 struct opcode {
     unsigned short opcode;
-    BOOL (*translate)(unsigned short, size_t);
+    BOOL (*translate)(unsigned short);
     unsigned short necessary_nibbles;
 };
 
 static const struct opcode opcodes[35] = 
 {
-    {0x00E0, &StubOpcode, ALL_NIBS}, // 00E0 disp_clear Clears the screen
-    {0x00EE, &StubOpcode, ALL_NIBS}, // 00EE returns from a subroutine
-    {0x0000, &StubOpcode, FIRST}, // 0NNN calls program at NN
-    {0x1000, &StubOpcode, FIRST}, // 1NNN jumps to address NNN
-    {0x2000, &StubOpcode, FIRST}, // 2NNN calls subroutine at NNN
-    {0x3000, &StubOpcode, FIRST}, // 3XNN skips the next instruction if Vx == NN
-    {0x4000, &StubOpcode, FIRST}, // 4XNN skips the next instruction if Vx != NN
-    {0x5000, &StubOpcode, FF_NIBS}, // 5XY0 skips next instruction if VX equals VY
-    {0x6000, &StubOpcode, FIRST}, // 6XNN sets VX to NN
-    {0x7000, &StubOpcode, FIRST}, // 7XNN add NN to VX (carry flag not changed)
-    {0x8000, &StubOpcode, FF_NIBS}, // 8XY0 Sets VX to value of VY
-    {0x8001, &StubOpcode, FF_NIBS}, // 8XY1 Sets VX to (VX or VY) (Bitwise OR operation)
-    {0x8002, &StubOpcode, FF_NIBS}, // 8XY2 Sets VX to (VX and VY) (Bitwise AND operation)
-    {0x8003, &StubOpcode, FF_NIBS}, // 8XY3 Sets VX to (VX xor VY)
-    {0x8004, &StubOpcode, FF_NIBS}, // 8XY4 Adds VY to VX. VF is set to 1 when there's a carry, and to 0 otherwise.
-    {0x8005, &StubOpcode, FF_NIBS}, // 8XY5 VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
-    {0x8006, &StubOpcode, FF_NIBS}, // 8XY6 Stores the least signification bit of VX in VF and then shifts VX to right by 1
+    {0x00E0, &ClearScreen                , ALL_NIBS}, // 00E0 disp_clear Clears the screen
+    {0x00EE, &Return                     , ALL_NIBS}, // 00EE returns from a subroutine
+    {0x0000, &CallProg                   , FIRST}, // 0NNN calls program at NN
+    {0x1000, &Jump.                      , FIRST}, // 1NNN jumps to address NNN
+    {0x2000, &CallSubroutine             , FIRST}, // 2NNN calls subroutine at NNN
+    {0x3000, &Skip_IfVx_EqualNN          , FIRST}, // 3XNN skips the next instruction if Vx == NN
+    {0x4000, &Skip_IfVx_DoesNotEqualNN   , FIRST}, // 4XNN skips the next instruction if Vx != NN
+    {0x5000, &Skip_IfVx_Equal_V          , FF_NIBS}, // 5XY0 skips next instruction if VX equals VY
+    {0x6000, &Set_Vx_To_NN               , FIRST}, // 6XNN sets VX to NN
+    {0x7000, &Add_NN_To_Vx               , FIRST}, // 7XNN add NN to VX (carry flag not changed)
+    {0x8000, &Vx_ToVy                    , FF_NIBS}, // 8XY0 Sets VX to value of VY
+    {0x8001, &Vx_To_VxOrVy               , FF_NIBS}, // 8XY1 Sets VX to (VX or VY) (Bitwise OR operation)
+    {0x8002, &SVx_To_VxAndVy             , FF_NIBS}, // 8XY2 Sets VX to (VX and VY) (Bitwise AND operation)
+    {0x8003, &Vx_To_VxXorVy              , FF_NIBS}, // 8XY3 Sets VX to (VX xor VY)
+    {0x8004, &Add_Vy_To_VxCarry          , FF_NIBS}, // 8XY4 Adds VY to VX. VF is set to 1 when there's a carry, and to 0 otherwise.
+    {0x8005, &Sub_Vy_From_VxBorrow       , FF_NIBS}, // 8XY5 VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
+    {0x8006, &Store_Least_Sig_Shift_Right, FF_NIBS}, // 8XY6 Stores the least signification bit of VX in VF and then shifts VX to right by 1
     {0x8007, &StubOpcode, FF_NIBS}, // 8XY7 Sets VX to (VY - VX). VF is set to 0 when there's a borrow, 1 otherwise
     {0x800E, &StubOpcode, FF_NIBS}, // 8XYE Stores the most significant bit of VX in VF and then shifts vx to the left by 1
     {0x9000, &StubOpcode, FF_NIBS}, // 9XY0 Skips the next instruction if VX != VY
@@ -119,7 +144,7 @@ BOOL First(unsigned short opcode, size_t opcodes_idx)
 
     if ((opcode >> 6) == (opcodes[opcodes_idx].opcode >> 6)) {
 
-        opcodes[opcodes_idx].translate(opcode, opcodes_idx);
+        opcodes[opcodes_idx].translate(opcode);
         translated_opcode = TRUE;
 
     }
@@ -133,7 +158,7 @@ BOOL ExactOpcode(unsigned short opcode, size_t opcodes_idx)
 
     if ((opcode ^ opcodes[opcodes_idx].opcode) == 0) {
 
-        opcodes[opcodes_idx].translate(opcode, opcodes_idx);
+        opcodes[opcodes_idx].translate(opcode);
         translated_opcode = TRUE;
 
     }
@@ -149,7 +174,7 @@ BOOL FirstFourth(unsigned short opcode, size_t opcodes_idx)
 
         if ((opcode << 6) == (opcodes[opcodes_idx].opcode << 6)) {
 
-            opcodes[opcodes_idx].translate(opcode, opcodes_idx);
+            opcodes[opcodes_idx].translate(opcode);
             translated_opcode = TRUE;
 
         }
@@ -169,7 +194,7 @@ BOOL FirstThirdFourth(unsigned short opcode, size_t opcodes_idx)
 
     if (first && third && fourth) {
 
-        opcodes[opcodes_idx].translate(opcode, opcodes_idx);
+        opcodes[opcodes_idx].translate(opcode);
         translated_opcode = TRUE;
 
     }
@@ -184,11 +209,10 @@ void DebugTranslateSingleInstruction(unsigned short opcode)
 
 }
 
-BOOL StubOpcode(unsigned short opcode, size_t opcodes_idx) 
+BOOL StubOpcode(unsigned short opcode) 
 {
     BOOL translated_opcode = FALSE;
     printf("Reached stub function with opcode %04x\n", opcode);
-    printf("Compared against opcode %04x\n", opcodes[opcodes_idx].opcode);
     return translated_opcode;
 
 }
