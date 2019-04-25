@@ -96,16 +96,16 @@ void SetupNextTranslation(unsigned short opcode)
 
         switch(opcodes[i].necessary_nibbles) {
         case FIRST:
-
+            First(opcode, i);
         break;
         case ALL_NIBS:
-
+            ExactOpcode(opcode, i);
         break;
         case FF_NIBS:
-
+            FirstFourth(opcode, i);
         break;
         case FTF_NIBS:
-
+            FirstThirdFourth(opcode, i);
         break;
         }
 
@@ -117,12 +117,26 @@ BOOL First(unsigned short opcode, size_t opcodes_idx)
 {
     BOOL translated_opcode = FALSE;
 
+    if ((opcode >> 6) == (opcodes[opcodes_idx].opcode >> 6)) {
+
+        opcodes[opcodes_idx].translate(opcode, opcodes_idx);
+        translated_opcode = TRUE;
+
+    }
+
     return translated_opcode;
 }
 
 BOOL ExactOpcode(unsigned short opcode, size_t opcodes_idx) 
 {
     BOOL translated_opcode = FALSE;
+
+    if ((opcode ^ opcodes[opcodes_idx].opcode) == 0) {
+
+        opcodes[opcodes_idx].translate(opcode, opcodes_idx);
+        translated_opcode = TRUE;
+
+    }
 
     return translated_opcode;
 }
@@ -131,12 +145,34 @@ BOOL FirstFourth(unsigned short opcode, size_t opcodes_idx)
 {
     BOOL translated_opcode = FALSE;
 
+    if ((opcode >> 6) == (opcodes[opcodes_idx].opcode >> 6)) {
+
+        if ((opcode << 6) == (opcodes[opcodes_idx].opcode << 6)) {
+
+            opcodes[opcodes_idx].translate(opcode, opcodes_idx);
+            translated_opcode = TRUE;
+
+        }
+
+    }
+
     return translated_opcode;
 }
 
 BOOL FirstThirdFourth(unsigned short opcode, size_t opcodes_idx)
 {
     BOOL translated_opcode = FALSE;
+
+    int first  = (opcode >> 6) == (opcodes[opcodes_idx].opcode >> 6);
+    int third  = ((opcode >> 2) << 3) == ((opcodes[opcodes_idx].opcode >> 2) << 3);
+    int fourth = (opcode << 6) == (opcodes[opcodes_idx].opcode << 6);
+
+    if (first && third && fourth) {
+
+        opcodes[opcodes_idx].translate(opcode, opcodes_idx);
+        translated_opcode = TRUE;
+
+    }
 
     return translated_opcode;
 }
