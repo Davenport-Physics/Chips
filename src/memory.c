@@ -1,8 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static unsigned char memory[4096];
-static char v_regs[16];
 
 void SetupReadOrExit(int argc, char **argv);
 void ReadChipFile(char *file_name);
@@ -73,4 +73,9 @@ void DumpContentsOfMemoryToFile()
 
     fclose(fp);
 
+}
+
+unsigned short GetNextOpCode() 
+{
+    return 0;
 }

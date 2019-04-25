@@ -1,6 +1,7 @@
-#IFNDEF MEMORY_H
-#DEFINE MEMORY_H
+#ifndef MEMORY_H
+#define MEMORY_H
 
 void InitializeMemory(int argc, char **argv);
+unsigned short GetNextOpCode();
 
-#ENDIF
+#endif
