@@ -16,6 +16,7 @@ static const int FF_NIBS  = FIRST | FOURTH;
 static const int FTF_NIBS = FIRST | THIRD | FOURTH;
 
 static char v_regs[16];
+static unsigned short I_reg          = 0;
 static unsigned short sound_timer    = 0;
 static unsigned short delay_timer    = 0;
 static unsigned short current_opcode = 0;
@@ -31,6 +32,8 @@ BOOL First(unsigned short opcode, size_t opcodes_idx);
 BOOL ExactOpcode(unsigned short opcode, size_t opcodes_idx);
 BOOL FirstFourth(unsigned short opcode, size_t opcodes_idx);
 BOOL FirstThirdFourth(unsigned short opcode, size_t opcodes_idx);
+
+unsigned char GetNibble(unsigned short opcode, unsigned short nibble);
 
 /* Register functions */
 void ClearScreen(unsigned short);
@@ -387,6 +390,12 @@ void Add_Vy_To_VxCarry(unsigned short opcode)
 void Sub_Vy_From_VxBorrow(unsigned short opcode) 
 {
 
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+
+	// TODO borrow
+	v_regs[x] -= v_regs[y];
+
 }
 
 // 8XY6
@@ -399,8 +408,15 @@ void Store_Least_Sig_Shift_Right(unsigned short opcode)
 
 }
 
+// 8XY7
 void Vx_To_VyMinusVxBorrow(unsigned short opcode) 
 {
+
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+
+	// TODO borrow
+	v_regs[x] = v_regs[y] - v_regs[x];
 
 }
 
@@ -501,8 +517,12 @@ void SetSoundTimer(unsigned short opcode)
 
 }
 
+// FX1E
 void AddVx_To_I(unsigned short opcode) 
 {
+
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	I_reg += v_regs[x];
 
 }
 
@@ -515,7 +535,7 @@ void Set_I_ToLocationOfSprite(unsigned short opcode)
 void StoreVx(unsigned short opcode) 
 {
 
-    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    unsigned char x = GetNibble(opcode, 2);
     push(v_regs[x]);
 
 }
@@ -539,5 +559,34 @@ void FillAllVs(unsigned short opcode)
         v_regs[i] = pop(2);
 
     }
+
+}
+
+unsigned char GetNibble(unsigned short opcode, unsigned short nibble) 
+{
+
+	switch (nibble) {
+	
+	case 1:
+		return (unsigned char)((0xF000 & opcode) >> 12);
+	break;
+
+	case 2:
+		return (unsigned char)((0x0F00 & opcode) >> 8);
+	break;
+
+	case 3:
+		return (unsigned char)((0x00F0 & opcode) >> 4);
+	break;
+
+	case 4:
+		return (unsigned char)((0x000F & opcode));
+	break;	
+
+	}
+
+	printf("ERROR: nibble was passed with unusable value %d", nibble);
+	exit(0);
+	return 0;
 
 }
