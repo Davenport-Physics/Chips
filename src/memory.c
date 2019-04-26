@@ -9,6 +9,7 @@ static unsigned short stack_pointer = 0x0EA0;
 
 void SetupReadOrExit(int argc, char **argv);
 void ReadChipFile(char *file_name);
+void CheckMemPointerOutOfBounds();
 void ResetMemory();
 void DumpContentsOfMemoryToFile();
 
@@ -127,16 +128,23 @@ void push(unsigned short word)
 
 }
 
+void CheckMemPointerOutOfBounds() 
+{
+
+    if (mem_pointer >= 4096) {
+
+        printf("\nmem_pointer is out of bounds\n");
+        exit(0);
+
+    }
+
+}
+
 void SkipNextInstruction() 
 {
 
     mem_pointer += 2;
-    if (mem_pointer > 4096) {
-
-        printf("\nmem_pointer is beyond scope\n");
-        exit(0);
-
-    }
+    CheckMemPointerOutOfBounds();
 
 }
 
@@ -161,7 +169,10 @@ void SetReturnAddress()
 
 unsigned short GetNextOpCode() 
 {
+
+    CheckMemPointerOutOfBounds();
     unsigned short opcode = (memory[mem_pointer] << 8) | memory[mem_pointer+1];
     mem_pointer += 2;
     return opcode;
+    
 }
