@@ -277,20 +277,49 @@ void Skip_IfVx_EqualNN(unsigned short opcode)
 void Skip_IfVx_DoesNotEqualNN(unsigned short opcode) 
 {
 
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char nn = (unsigned char)(0x00FF & opcode);
+
+	if (v_regs[x] != nn) {
+	
+		SkipNextInstruction();
+
+	}	
+
 }
 
 void Skip_IfVx_Equal_Vy(unsigned short opcode) 
 {
+
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);	
+	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+
+	if (v_regs[x] == v_regs[y]) {
+	
+		SkipNextInstruction();
+	
+	}
 
 }
 
 void Set_Vx_To_NN(unsigned short opcode) 
 {
 
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char nn = (unsigned char)(0x00FF & opcode);
+
+	v_regs[x] == nn;
+
 }
 
+// TODO check if carry
 void Add_NN_To_Vx(unsigned short opcode) 
 {
+
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char nn = (unsigned char)(0x00FF & opcode);
+
+	v_regs[x] += nn;
 
 }
 
@@ -328,6 +357,7 @@ void Vx_To_VxAndVy(unsigned short opcode)
 
 void Vx_To_VxXorVy(unsigned short opcode) 
 {
+
 	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
 	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
 
@@ -337,6 +367,12 @@ void Vx_To_VxXorVy(unsigned short opcode)
 
 void Add_Vy_To_VxCarry(unsigned short opcode) 
 {
+
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+
+	// TODO carry logic
+	v_regs[x] += v_regs[y];	
 
 }
 
