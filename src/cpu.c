@@ -593,11 +593,11 @@ unsigned char GetNibble(unsigned short opcode, unsigned short nibble)
 	break;
 
 	case 2:
-		return GetNibble(opcode, 2);
+		return (unsigned char)((0x0F00 & opcode) >> 8);
 	break;
 
 	case 3:
-		return GetNibble(opcode, 3);
+		return (unsigned char)((0x00F0 & opcode) >> 4);
 	break;
 
 	case 4:
