@@ -462,7 +462,7 @@ void Jump_ToAddressNNPlusV0(unsigned short opcode)
 void SetVx_To_RandomAndNN(unsigned short opcode) 
 {
 
-    unsigned char x  = (unsigned char)((0x0F00 & opcode) >> 8);
+    unsigned char x  = GetNibble(opcode, 2);
     unsigned char nn = (unsigned char)(0x00FF & opcode);
     unsigned char rn = rand()%256;
 
@@ -489,7 +489,7 @@ void Skip_Instruction_If_Key_Not_Pressed(unsigned short opcode)
 void SetVXToDelayTimer(unsigned short opcode) 
 {
 
-    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    unsigned char x = GetNibble(opcode, 2);
     v_regs[x] = delay_timer;
 
 }
@@ -503,7 +503,7 @@ void GetBlockingKeyPress(unsigned short opcode)
 void SetDelayTimer(unsigned short opcode) 
 {
 
-    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    unsigned char x = GetNibble(opcode, 2);
     delay_timer = v_regs[x];
 
 }
@@ -512,7 +512,7 @@ void SetDelayTimer(unsigned short opcode)
 void SetSoundTimer(unsigned short opcode) 
 {
 
-    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    unsigned char x = GetNibble(opcode, 2);
     sound_timer = v_regs[x];
 
 }
@@ -521,7 +521,7 @@ void SetSoundTimer(unsigned short opcode)
 void AddVx_To_I(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char x = GetNibble(opcode, 2);
 	I_reg += v_regs[x];
 
 }
