@@ -143,9 +143,14 @@ void JumpToInstruction(unsigned short location)
 
 void CallIntruction(unsigned short location) 
 {
-    push(mem_pointer);
+    push(mem_pointer+2);
     mem_pointer = location;
 
+}
+
+void SetReturnAddress() 
+{
+    mem_pointer = pop(2);
 }
 
 unsigned short GetNextOpCode() 

@@ -242,7 +242,7 @@ void ClearScreen(unsigned short opcode)
 
 void Return(unsigned short opcode) 
 {
-
+    SetReturnAddress();
 }
 
 void CallProg(unsigned short opcode) 
@@ -250,14 +250,17 @@ void CallProg(unsigned short opcode)
 
 }
 
+// 1NNN
 void Jump(unsigned short opcode) 
 {
+
+    JumpToInstruction(0x0FFF & opcode);
 
 }
 
 void CallSubroutine(unsigned short opcode) 
 {
-
+    CallIntruction(0x0FFF & opcode);
 }
 
 void Skip_IfVx_EqualNN(unsigned short opcode) 
@@ -305,10 +308,10 @@ void Skip_IfVx_Equal_Vy(unsigned short opcode)
 void Set_Vx_To_NN(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char x  = (unsigned char)((0x0F00 & opcode) >> 8);
 	unsigned char nn = (unsigned char)(0x00FF & opcode);
 
-	v_regs[x] == nn;
+	v_regs[x] = nn;
 
 }
 
@@ -316,7 +319,7 @@ void Set_Vx_To_NN(unsigned short opcode)
 void Add_NN_To_Vx(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char x  = (unsigned char)((0x0F00 & opcode) >> 8);
 	unsigned char nn = (unsigned char)(0x00FF & opcode);
 
 	v_regs[x] += nn;
