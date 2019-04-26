@@ -263,6 +263,15 @@ void CallSubroutine(unsigned short opcode)
 void Skip_IfVx_EqualNN(unsigned short opcode) 
 {
 
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char nn = (unsigned char)(0x00FF & opcode);
+
+	if (v_regs[x] == nn) {
+
+		SkipNextInstruction();		
+
+	}
+
 }
 
 void Skip_IfVx_DoesNotEqualNN(unsigned short opcode) 
@@ -300,15 +309,29 @@ void Vx_ToVy(unsigned short opcode)
 void Vx_To_VxOrVy(unsigned short opcode) 
 {
 
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+
+	v_regs[x] = v_regs[x] | v_regs[y];
+
 }
 
 void Vx_To_VxAndVy(unsigned short opcode) 
 {
 
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+
+	v_regs[x] = v_regs[x] & v_regs[y];
+
 }
 
 void Vx_To_VxXorVy(unsigned short opcode) 
 {
+	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+
+	v_regs[x] = v_regs[x] ^ v_regs[y];
 
 }
 

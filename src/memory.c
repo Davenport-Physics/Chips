@@ -75,6 +75,13 @@ void DumpContentsOfMemoryToFile()
 
 }
 
+void SkipNextInstruction() 
+{
+
+	printf("SkipNextInstruction STUB");
+
+}
+
 unsigned short GetNextOpCode() 
 {
     return 0;
