@@ -162,7 +162,7 @@ BOOL First(unsigned short opcode, size_t opcodes_idx)
 {
     BOOL translated_opcode = FALSE;
 
-    if ((opcode & 0xF00) == (opcodes[opcodes_idx].opcode & 0xF000)) {
+    if ((opcode & 0xF000) == (opcodes[opcodes_idx].opcode & 0xF000)) {
 
         opcodes[opcodes_idx].translate(opcode);
         translated_opcode = TRUE;
