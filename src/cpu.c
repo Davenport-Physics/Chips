@@ -274,7 +274,7 @@ void CallSubroutine(unsigned short opcode)
 void Skip_IfVx_EqualNN(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char x = GetNibble(opcode, 2);
 	unsigned char nn = (unsigned char)(0x00FF & opcode);
 
 	if (v_regs[x] == nn) {
@@ -288,7 +288,7 @@ void Skip_IfVx_EqualNN(unsigned short opcode)
 void Skip_IfVx_DoesNotEqualNN(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char x = GetNibble(opcode, 2);
 	unsigned char nn = (unsigned char)(0x00FF & opcode);
 
 	if (v_regs[x] != nn) {
@@ -302,8 +302,8 @@ void Skip_IfVx_DoesNotEqualNN(unsigned short opcode)
 void Skip_IfVx_Equal_Vy(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);	
-	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+	unsigned char x = GetNibble(opcode, 2);	
+	unsigned char y = GetNibble(opcode, 3);
 
 	if (v_regs[x] == v_regs[y]) {
 	
@@ -316,7 +316,7 @@ void Skip_IfVx_Equal_Vy(unsigned short opcode)
 void Set_Vx_To_NN(unsigned short opcode) 
 {
 
-	unsigned char x  = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char x  = GetNibble(opcode, 2);
 	unsigned char nn = (unsigned char)(0x00FF & opcode);
 
 	v_regs[x] = nn;
@@ -327,7 +327,7 @@ void Set_Vx_To_NN(unsigned short opcode)
 void Add_NN_To_Vx(unsigned short opcode) 
 {
 
-	unsigned char x  = (unsigned char)((0x0F00 & opcode) >> 8);
+	unsigned char x  = GetNibble(opcode, 2);
 	unsigned char nn = (unsigned char)(0x00FF & opcode);
 
 	v_regs[x] += nn;
@@ -339,8 +339,8 @@ void Add_NN_To_Vx(unsigned short opcode)
 void Vx_ToVy(unsigned short opcode) 
 {
 	
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
-	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+	unsigned char x = GetNibble(opcode, 2);
+	unsigned char y = GetNibble(opcode, 3);
 
 	v_regs[x] = v_regs[y];	
 
@@ -349,8 +349,8 @@ void Vx_ToVy(unsigned short opcode)
 void Vx_To_VxOrVy(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
-	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+	unsigned char x = GetNibble(opcode, 2);
+	unsigned char y = GetNibble(opcode, 3);
 
 	v_regs[x] = v_regs[x] | v_regs[y];
 
@@ -359,8 +359,8 @@ void Vx_To_VxOrVy(unsigned short opcode)
 void Vx_To_VxAndVy(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
-	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+	unsigned char x = GetNibble(opcode, 2);
+	unsigned char y = GetNibble(opcode, 3);
 
 	v_regs[x] = v_regs[x] & v_regs[y];
 
@@ -369,8 +369,8 @@ void Vx_To_VxAndVy(unsigned short opcode)
 void Vx_To_VxXorVy(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
-	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+	unsigned char x = GetNibble(opcode, 2);
+	unsigned char y = GetNibble(opcode, 3);
 
 	v_regs[x] = v_regs[x] ^ v_regs[y];
 
@@ -379,8 +379,8 @@ void Vx_To_VxXorVy(unsigned short opcode)
 void Add_Vy_To_VxCarry(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
-	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+	unsigned char x = GetNibble(opcode, 2);
+	unsigned char y = GetNibble(opcode, 3);
 
 	// TODO carry logic
 	v_regs[x] += v_regs[y];	
@@ -390,8 +390,8 @@ void Add_Vy_To_VxCarry(unsigned short opcode)
 void Sub_Vy_From_VxBorrow(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
-	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+	unsigned char x = GetNibble(opcode, 2);
+	unsigned char y = GetNibble(opcode, 3);
 
 	// TODO borrow
 	v_regs[x] -= v_regs[y];
@@ -402,7 +402,7 @@ void Sub_Vy_From_VxBorrow(unsigned short opcode)
 void Store_Least_Sig_Shift_Right(unsigned short opcode) 
 {
 
-    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    unsigned char x = GetNibble(opcode, 2);
     v_regs[15]      = 0x0001 | v_regs[x];
     v_regs[x]       = v_regs[x] >> 1;
 
@@ -412,8 +412,8 @@ void Store_Least_Sig_Shift_Right(unsigned short opcode)
 void Vx_To_VyMinusVxBorrow(unsigned short opcode) 
 {
 
-	unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
-	unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+	unsigned char x = GetNibble(opcode, 2);
+	unsigned char y = GetNibble(opcode, 3);
 
 	// TODO borrow
 	v_regs[x] = v_regs[y] - v_regs[x];
@@ -423,7 +423,7 @@ void Vx_To_VyMinusVxBorrow(unsigned short opcode)
 void Store_Most_Sig_Shift_Left(unsigned short opcode) 
 {
 
-    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    unsigned char x = GetNibble(opcode, 2);
     v_regs[15]      = 0x8000 | v_regs[x];
     v_regs[x]       = v_regs[x] << 1;
 
@@ -433,8 +433,8 @@ void Store_Most_Sig_Shift_Left(unsigned short opcode)
 void SkipNextIf_VxDoesNotEqual_Vy(unsigned short opcode) 
 {
 
-    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
-    unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+    unsigned char x = GetNibble(opcode, 2);
+    unsigned char y = GetNibble(opcode, 3);
 
     if (v_regs[x] != v_regs[y]) {
 
@@ -572,11 +572,11 @@ unsigned char GetNibble(unsigned short opcode, unsigned short nibble)
 	break;
 
 	case 2:
-		return (unsigned char)((0x0F00 & opcode) >> 8);
+		return GetNibble(opcode, 2);
 	break;
 
 	case 3:
-		return (unsigned char)((0x00F0 & opcode) >> 4);
+		return GetNibble(opcode, 3);
 	break;
 
 	case 4:
