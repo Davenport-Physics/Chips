@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "memory.h"
@@ -14,6 +16,8 @@ static const int FF_NIBS  = FIRST | FOURTH;
 static const int FTF_NIBS = FIRST | THIRD | FOURTH;
 
 static char v_regs[16];
+static unsigned short sound_timer    = 0;
+static unsigned short delay_timer    = 0;
 static unsigned short current_opcode = 0;
 
 typedef enum BOOL {
@@ -55,7 +59,7 @@ void Vx_To_VyMinusVxBorrow(unsigned short);
 void Store_Most_Sig_Shift_Left(unsigned short);
 void SkipNextIf_VxDoesNotEqual_Vy(unsigned short);
 void Set_I_to_NN(unsigned short);
-void Jump_ToAdressNNPlusV0(unsigned short);
+void Jump_ToAddressNNPlusV0(unsigned short);
 void SetVx_To_RandomAndNN(unsigned short);
 void DrawSrite(unsigned short);
 void Skip_Instruction_If_Key_IsPressed(unsigned short);
@@ -101,7 +105,7 @@ static const struct opcode opcodes[35] =
     {0x800E, &Store_Most_Sig_Shift_Left          , FF_NIBS}, // 8XYE Stores the most significant bit of VX in VF and then shifts vx to the left by 1
     {0x9000, &SkipNextIf_VxDoesNotEqual_Vy       , FF_NIBS}, // 9XY0 Skips the next instruction if VX != VY
     {0xA000, &Set_I_to_NN                        , FIRST}, // ANNN Sets I to the address of NN
-    {0xB000, &Jump_ToAdressNNPlusV0              , FIRST}, // BNNN Jumps to the address [NNN + V0]
+    {0xB000, &Jump_ToAddressNNPlusV0             , FIRST}, // BNNN Jumps to the address [NNN + V0]
     {0xC000, &SetVx_To_RandomAndNN               , FIRST}, // CXNN Sets VX to the result of a bitwise AND operation on a random number 0-255 and NN
     {0xD000, &DrawSrite                          , FIRST}, // DXYN Draws a sprite at (VX, VY) with width of 8 and N height in N pixels.
     {0xE09E, &Skip_Instruction_If_Key_IsPressed  , FTF_NIBS}, // EX9E Skips the instruction if key stored in VX is pressed
@@ -121,6 +125,7 @@ void InitializeCPU()
 {
 
     memset(v_regs, 0, 16);
+    srand(time(NULL));
 
 }
 
@@ -384,8 +389,13 @@ void Sub_Vy_From_VxBorrow(unsigned short opcode)
 
 }
 
+// 8XY6
 void Store_Least_Sig_Shift_Right(unsigned short opcode) 
 {
+
+    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    v_regs[15]      = 0x0001 | v_regs[x];
+    v_regs[x]       = v_regs[x] >> 1;
 
 }
 
@@ -397,10 +407,24 @@ void Vx_To_VyMinusVxBorrow(unsigned short opcode)
 void Store_Most_Sig_Shift_Left(unsigned short opcode) 
 {
 
+    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    v_regs[15]      = 0x8000 | v_regs[x];
+    v_regs[x]       = v_regs[x] << 1;
+
 }
 
+// 9XY0
 void SkipNextIf_VxDoesNotEqual_Vy(unsigned short opcode) 
 {
+
+    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    unsigned char y = (unsigned char)((0x00F0 & opcode) >> 4);
+
+    if (v_regs[x] != v_regs[y]) {
+
+        SkipNextInstruction();
+
+    }
 
 }
 
@@ -409,13 +433,24 @@ void Set_I_to_NN(unsigned short opcode)
 
 }
 
-void Jump_ToAdressNNPlusV0(unsigned short opcode) 
+// BNNN
+void Jump_ToAddressNNPlusV0(unsigned short opcode) 
 {
+
+    unsigned short nnn = 0x0FFF & opcode;
+    JumpToInstruction(nnn + v_regs[0]);
 
 }
 
+// CXNN
 void SetVx_To_RandomAndNN(unsigned short opcode) 
 {
+
+    unsigned char x  = (unsigned char)((0x0F00 & opcode) >> 8);
+    unsigned char nn = (unsigned char)(0x00FF & opcode);
+    unsigned char rn = rand()%256;
+
+    v_regs[x] = rn & nn;
 
 }
 
@@ -434,8 +469,12 @@ void Skip_Instruction_If_Key_Not_Pressed(unsigned short opcode)
 
 }
 
+// FX07
 void SetVXToDelayTimer(unsigned short opcode) 
 {
+
+    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    v_regs[x] = delay_timer;
 
 }
 
@@ -444,13 +483,21 @@ void GetBlockingKeyPress(unsigned short opcode)
 
 }
 
+// FX15
 void SetDelayTimer(unsigned short opcode) 
 {
 
+    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    delay_timer = v_regs[x];
+
 }
 
+// FX18
 void SetSoundTimer(unsigned short opcode) 
 {
+
+    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    sound_timer = v_regs[x];
 
 }
 
@@ -464,17 +511,33 @@ void Set_I_ToLocationOfSprite(unsigned short opcode)
 
 }
 
+// FX33
 void StoreVx(unsigned short opcode) 
 {
+
+    unsigned char x = (unsigned char)((0x0F00 & opcode) >> 8);
+    push(v_regs[x]);
 
 }
 
 void StoreAllVs(unsigned short opcode) 
 {
 
+    for (size_t i = 0;i < 16; i++) {
+
+        push(v_regs[i]);
+
+    }
+
 }
 
 void FillAllVs(unsigned short opcode) 
 {
+
+    for (size_t i = 15; i > -1; i--) {
+
+        v_regs[i] = pop(2);
+
+    }
 
 }

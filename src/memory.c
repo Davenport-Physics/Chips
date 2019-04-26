@@ -83,6 +83,12 @@ unsigned short pop(int num_bytes)
 
     unsigned short value = 0;
 
+    if (stack_pointer < 0x0EA0) {
+
+        printf("\nStack underflow detected\n");
+        exit(0);
+
+    }
     if (num_bytes > 2) {
 
         printf("\nMay only pop 2 bytes or less\n");
