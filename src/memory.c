@@ -176,3 +176,21 @@ unsigned short GetNextOpCode()
     return opcode;
     
 }
+
+void SetValueAtAddress(unsigned short value, unsigned short address) 
+{
+
+	unsigned char high = (unsigned char)((0xFF00 & value) >> 8);
+	unsigned char low  = (unsigned char)(0x00FF & value);
+
+	memory[address]   = high;
+	memory[address+1] = low;
+
+}
+
+unsigned short GetValueAtAddress(unsigned short address) 
+{
+
+	return (memory[address-1] << 8) | memory[address];
+
+}

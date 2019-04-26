@@ -11,5 +11,7 @@ void push(unsigned short);
 unsigned short pop(int num_bytes);
 
 unsigned short GetNextOpCode();
+void SetValueAtAddress(unsigned short value, unsigned short address);
+unsigned short GetValueAtAddress(unsigned short address);
 
 #endif

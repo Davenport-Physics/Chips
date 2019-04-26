@@ -4,6 +4,8 @@
 #include <string.h>
 
 #include "memory.h"
+#include "controls.h"
+#include "shared.h"
 
 // from left to right.
 static const int FIRST  = 1;
@@ -20,13 +22,6 @@ static unsigned short I_reg          = 0;
 static unsigned short sound_timer    = 0;
 static unsigned short delay_timer    = 0;
 static unsigned short current_opcode = 0;
-
-typedef enum BOOL {
-
-    FALSE = 0,
-    TRUE
-
-} BOOL;
 
 BOOL First(unsigned short opcode, size_t opcodes_idx);
 BOOL ExactOpcode(unsigned short opcode, size_t opcodes_idx);
@@ -444,8 +439,12 @@ void SkipNextIf_VxDoesNotEqual_Vy(unsigned short opcode)
 
 }
 
+// ANNN Sets I to the address of NNN
 void Set_I_to_NN(unsigned short opcode) 
 {
+
+	unsigned short nnn = 0x0FFF & opcode;
+	I_reg = nnn;
 
 }
 
@@ -475,13 +474,28 @@ void DrawSrite(unsigned short opcode)
 
 }
 
+// EX9E
 void Skip_Instruction_If_Key_IsPressed(unsigned short opcode) 
 {
+
+	unsigned char x = GetNibble(opcode, 2);
+	if (IsKeyPressed(v_regs[x])) {
+	
+		SkipNextInstruction();	
+	
+	}
 
 }
 
 void Skip_Instruction_If_Key_Not_Pressed(unsigned short opcode) 
 {
+
+	unsigned char x = GetNibble(opcode, 2);
+	if (!IsKeyPressed(v_regs[x])) {
+	
+		SkipNextInstruction();
+	
+	}
 
 }
 
@@ -526,6 +540,7 @@ void AddVx_To_I(unsigned short opcode)
 
 }
 
+// FX29 sets I to the location of the sprite for the character in VX. (Chars 0-F are represented by 4x5 font)
 void Set_I_ToLocationOfSprite(unsigned short opcode) 
 {
 
@@ -540,23 +555,29 @@ void StoreVx(unsigned short opcode)
 
 }
 
+// FX55 Stores V0 to VX in memory starting at address I
 void StoreAllVs(unsigned short opcode) 
 {
 
-    for (size_t i = 0;i < 16; i++) {
+	size_t x = GetNibble(opcode, 2);
+    for (size_t i = 0;i < x; i++) {
 
-        push(v_regs[i]);
+		SetValueAtAddress(v_regs[i], I_reg);
+		I_reg += 2;
 
     }
 
 }
 
+// TODO not implemented correctly
 void FillAllVs(unsigned short opcode) 
 {
 
-    for (size_t i = 15; i > -1; i--) {
+	size_t x = GetNibble(opcode, 2);
+    for (size_t i = x; i > -1; i--) {
 
-        v_regs[i] = pop(2);
+        v_regs[i] = GetValueAtAddress(I_reg);
+		I_reg -= 2;
 
     }
 
