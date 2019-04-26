@@ -3,6 +3,9 @@
 #include <string.h>
 
 static unsigned char memory[4096];
+static unsigned short mem_pointer = 512;
+
+static unsigned short stack_pointer = 0x0EA0;
 
 void SetupReadOrExit(int argc, char **argv);
 void ReadChipFile(char *file_name);
@@ -75,14 +78,79 @@ void DumpContentsOfMemoryToFile()
 
 }
 
+unsigned short pop(int num_bytes) 
+{
+
+    unsigned short value = 0;
+
+    if (num_bytes > 2) {
+
+        printf("\nMay only pop 2 bytes or less\n");
+        exit(0);
+
+    }
+    for (int i = 0;i < num_bytes;i++) {
+
+        stack_pointer--;
+        value = value | (memory[stack_pointer] << 8*i);
+
+    }
+    return value;
+
+}
+
+void push(unsigned short word) 
+{
+
+    unsigned short high_byte = ((word & 0xFF00) >> 8);
+    unsigned short low_byte  = (word & 0x00FF);
+
+    if (stack_pointer < 0x0EFF) {
+
+        memory[stack_pointer] = high_byte;
+        stack_pointer++;
+        memory[stack_pointer] = low_byte;
+        stack_pointer++;
+
+    } else {
+
+        printf("\nStack overflow detected.\n");
+        exit(0);
+
+    }
+
+}
+
 void SkipNextInstruction() 
 {
 
-	printf("SkipNextInstruction STUB");
+    mem_pointer += 2;
+    if (mem_pointer > 4096) {
+
+        printf("\nmem_pointer is beyond scope\n");
+        exit(0);
+
+    }
+
+}
+
+void JumpToInstruction(unsigned short location) 
+{
+
+    mem_pointer = location;
+
+}
+
+void CallIntruction(unsigned short location) 
+{
+    push(mem_pointer);
+    mem_pointer = location;
 
 }
 
 unsigned short GetNextOpCode() 
 {
-    return 0;
+    unsigned short opcode = (memory[mem_pointer] << 8) | memory[mem_pointer+1];
+    mem_pointer += 2;
+    return opcode;
 }
