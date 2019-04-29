@@ -7,6 +7,7 @@
 #include "memory.h"
 #include "controls.h"
 #include "shared.h"
+#include "draw.h"
 
 // from left to right.
 static const int FIRST  = 1;
@@ -132,6 +133,17 @@ void InitializeCPU()
 void ExecuteNextOpCode()
 {
     SetupNextTranslation(GetNextOpCode());
+
+    if (delay_timer > 0)
+        delay_timer--;
+
+    if (sound_timer > 0) {
+
+        if (sound_timer == 1)
+            printf("STUB BEEP\n");
+        sound_timer--;
+
+    }
 }
 
 void SetupNextTranslation(unsigned short opcode)
@@ -242,6 +254,8 @@ BOOL StubOpcode(unsigned short opcode)
 
 void ClearScreen(unsigned short opcode) 
 {
+
+    ClearDrawScreen();
 
 }
 
