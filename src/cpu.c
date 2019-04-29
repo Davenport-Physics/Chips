@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <math.h>
 #include <string.h>
 
 #include "memory.h"
@@ -29,6 +30,7 @@ BOOL FirstFourth(unsigned short opcode, size_t opcodes_idx);
 BOOL FirstThirdFourth(unsigned short opcode, size_t opcodes_idx);
 
 unsigned char GetNibble(unsigned short opcode, unsigned short nibble);
+unsigned short GetSigDecimal(unsigned short, int);
 
 /* Register functions */
 void ClearScreen(unsigned short);
@@ -551,7 +553,13 @@ void StoreVx(unsigned short opcode)
 {
 
     unsigned char x = GetNibble(opcode, 2);
-    push(v_regs[x]);
+    for (int i = 2; i >= 0; i--) {
+
+        SetValueAtAddress(GetSigDecimal(v_regs[x], i), I_reg);
+        I_reg += 2;
+
+    }
+
 
 }
 
@@ -559,25 +567,27 @@ void StoreVx(unsigned short opcode)
 void StoreAllVs(unsigned short opcode) 
 {
 
-	size_t x = GetNibble(opcode, 2);
+	size_t x                  = GetNibble(opcode, 2);
+    unsigned short I_reg_temp = I_reg;
+
     for (size_t i = 0;i < x; i++) {
 
-		SetValueAtAddress(v_regs[i], I_reg);
-		I_reg += 2;
+		SetValueAtAddress(v_regs[i], I_reg_temp);
+		I_reg_temp += 2;
 
     }
 
 }
 
-// TODO not implemented correctly
 void FillAllVs(unsigned short opcode) 
 {
 
-	size_t x = GetNibble(opcode, 2);
-    for (size_t i = x; i > -1; i--) {
+	size_t x                  = GetNibble(opcode, 2);
+    unsigned short I_reg_temp = I_reg;
+    for (size_t i = x; i >= 0; i--) {
 
-        v_regs[i] = GetValueAtAddress(I_reg);
-		I_reg -= 2;
+        v_regs[i]   = GetValueAtAddress(I_reg_temp);
+		I_reg_temp -= 2;
 
     }
 
@@ -609,5 +619,15 @@ unsigned char GetNibble(unsigned short opcode, unsigned short nibble)
 	printf("ERROR: nibble was passed with unusable value %d", nibble);
 	exit(0);
 	return 0;
+
+}
+
+unsigned short GetSigDecimal(unsigned short value, int place) 
+{
+
+    unsigned short denominator = pow(10, place);
+    unsigned short sig_digit   = value / denominator;
+
+    return sig_digit % 10;
 
 }
