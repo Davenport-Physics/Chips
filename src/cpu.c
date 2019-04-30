@@ -539,6 +539,8 @@ void SetVXToDelayTimer(uint_16 opcode)
 void GetBlockingKeyPress(uint_16 opcode) 
 {
 
+    v_regs[GetNibble(opcode, 2)] = AwaitKeyPress();
+
 }
 
 // FX15
