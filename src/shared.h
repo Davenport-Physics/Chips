@@ -8,4 +8,7 @@ typedef enum BOOL {
 
 } BOOL;
 
+typedef unsigned char uint_8;
+typedef unsigned short uint_16;
+
 #endif

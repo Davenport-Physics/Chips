@@ -3,6 +3,7 @@
 
 #include "shared.h"
 
-BOOL IsKeyPressed(unsigned short);
+BOOL IsKeyPressed(uint_16);
+uint_8 AwaitKeyPress();
 
 #endif

@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-static unsigned char memory[4096] = {
+#include "shared.h"
+
+static uint_8 memory[4096] = {
 
   0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
   0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -22,9 +24,8 @@ static unsigned char memory[4096] = {
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 
 };
-static unsigned short mem_pointer = 512;
-
-static unsigned short stack_pointer = 0x0EA0;
+static uint_16 mem_pointer   = 512;
+static uint_16 stack_pointer = 0x0EA0;
 
 void SetupReadOrExit(int argc, char **argv);
 void ReadChipFile(char *file_name);
@@ -98,10 +99,10 @@ void DumpContentsOfMemoryToFile()
 
 }
 
-unsigned short pop(int num_bytes) 
+uint_16 pop(int num_bytes) 
 {
 
-    unsigned short value = 0;
+    uint_16 value = 0;
 
     if (stack_pointer < 0x0EA0) {
 
@@ -125,11 +126,11 @@ unsigned short pop(int num_bytes)
 
 }
 
-void push(unsigned short word) 
+void push(uint_16 word) 
 {
 
-    unsigned short high_byte = ((word & 0xFF00) >> 8);
-    unsigned short low_byte  = (word & 0x00FF);
+    uint_16 high_byte = ((word & 0xFF00) >> 8);
+    uint_16 low_byte  = (word & 0x00FF);
 
     if (stack_pointer < 0x0EFF) {
 
@@ -167,14 +168,14 @@ void SkipNextInstruction()
 
 }
 
-void JumpToInstruction(unsigned short location) 
+void JumpToInstruction(uint_16 location) 
 {
 
     mem_pointer = location;
 
 }
 
-void CallIntruction(unsigned short location) 
+void CallIntruction(uint_16 location) 
 {
     push(mem_pointer+2);
     mem_pointer = location;
@@ -186,28 +187,28 @@ void SetReturnAddress()
     mem_pointer = pop(2);
 }
 
-unsigned short GetNextOpCode() 
+uint_16 GetNextOpCode() 
 {
 
     CheckMemPointerOutOfBounds();
-    unsigned short opcode = (memory[mem_pointer] << 8) | memory[mem_pointer+1];
+    uint_16 opcode = (memory[mem_pointer] << 8) | memory[mem_pointer+1];
     mem_pointer += 2;
     return opcode;
     
 }
 
-void SetValueAtAddress(unsigned short value, unsigned short address) 
+void SetValueAtAddress(uint_16 value, uint_16 address) 
 {
 
-	unsigned char high = (unsigned char)((0xFF00 & value) >> 8);
-	unsigned char low  = (unsigned char)(0x00FF & value);
+	uint_8 high = (uint_8)((0xFF00 & value) >> 8);
+	uint_8 low  = (uint_8)(0x00FF & value);
 
 	memory[address]   = high;
 	memory[address+1] = low;
 
 }
 
-unsigned short GetValueAtAddress(unsigned short address) 
+uint_16 GetValueAtAddress(uint_16 address) 
 {
 
 	return (memory[address-1] << 8) | memory[address];

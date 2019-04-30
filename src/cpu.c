@@ -20,67 +20,67 @@ static const int ALL_NIBS = FIRST | SECOND | THIRD | FOURTH;
 static const int FF_NIBS  = FIRST | FOURTH;
 static const int FTF_NIBS = FIRST | THIRD | FOURTH;
 
-static char v_regs[16];
-static unsigned short I_reg          = 0;
-static unsigned short sound_timer    = 0;
-static unsigned short delay_timer    = 0;
-static unsigned short current_opcode = 0;
+static uint_16 v_regs[16];
+static uint_16 I_reg          = 0;
+static uint_16 sound_timer    = 0;
+static uint_16 delay_timer    = 0;
+static uint_16 current_opcode = 0;
 
-BOOL First(unsigned short opcode, size_t opcodes_idx);
-BOOL ExactOpcode(unsigned short opcode, size_t opcodes_idx);
-BOOL FirstFourth(unsigned short opcode, size_t opcodes_idx);
-BOOL FirstThirdFourth(unsigned short opcode, size_t opcodes_idx);
+BOOL First(uint_16 opcode, size_t opcodes_idx);
+BOOL ExactOpcode(uint_16 opcode, size_t opcodes_idx);
+BOOL FirstFourth(uint_16 opcode, size_t opcodes_idx);
+BOOL FirstThirdFourth(uint_16 opcode, size_t opcodes_idx);
 
-unsigned char GetNibble(unsigned short opcode, unsigned short nibble);
-unsigned short GetSigDecimal(unsigned short, int);
+uint_8 GetNibble(uint_16 opcode, uint_16 nibble);
+uint_16 GetSigDecimal(uint_16, int);
 
 /* Register functions */
-void ClearScreen(unsigned short);
-void Return(unsigned short);
-void CallProg(unsigned short);
-void Jump(unsigned short);
-void CallSubroutine(unsigned short);
+void ClearScreen(uint_16);
+void Return(uint_16);
+void CallProg(uint_16);
+void Jump(uint_16);
+void CallSubroutine(uint_16);
 
-void Skip_IfVx_EqualNN(unsigned short);
-void Skip_IfVx_DoesNotEqualNN(unsigned short);
-void Skip_IfVx_Equal_Vy(unsigned short);
+void Skip_IfVx_EqualNN(uint_16);
+void Skip_IfVx_DoesNotEqualNN(uint_16);
+void Skip_IfVx_Equal_Vy(uint_16);
 
-void Set_Vx_To_NN(unsigned short);
-void Add_NN_To_Vx(unsigned short);
+void Set_Vx_To_NN(uint_16);
+void Add_NN_To_Vx(uint_16);
 
-void Vx_ToVy(unsigned short);
-void Vx_To_VxOrVy(unsigned short);
-void Vx_To_VxAndVy(unsigned short);
-void Vx_To_VxXorVy(unsigned short);
+void Vx_ToVy(uint_16);
+void Vx_To_VxOrVy(uint_16);
+void Vx_To_VxAndVy(uint_16);
+void Vx_To_VxXorVy(uint_16);
 
-void Add_Vy_To_VxCarry(unsigned short);
-void Sub_Vy_From_VxBorrow(unsigned short);
-void Store_Least_Sig_Shift_Right(unsigned short);
+void Add_Vy_To_VxCarry(uint_16);
+void Sub_Vy_From_VxBorrow(uint_16);
+void Store_Least_Sig_Shift_Right(uint_16);
 
-void Vx_To_VyMinusVxBorrow(unsigned short);
-void Store_Most_Sig_Shift_Left(unsigned short);
-void SkipNextIf_VxDoesNotEqual_Vy(unsigned short);
-void Set_I_to_NN(unsigned short);
-void Jump_ToAddressNNPlusV0(unsigned short);
-void SetVx_To_RandomAndNN(unsigned short);
-void DrawSprite(unsigned short);
-void Skip_Instruction_If_Key_IsPressed(unsigned short);
-void Skip_Instruction_If_Key_Not_Pressed(unsigned short);
-void SetVXToDelayTimer(unsigned short);
-void GetBlockingKeyPress(unsigned short);
-void SetDelayTimer(unsigned short);
-void SetSoundTimer(unsigned short);
-void AddVx_To_I(unsigned short);
-void Set_I_ToLocationOfSprite(unsigned short);
-void StoreVx(unsigned short);
-void StoreAllVs(unsigned short);
-void FillAllVs(unsigned short);
+void Vx_To_VyMinusVxBorrow(uint_16);
+void Store_Most_Sig_Shift_Left(uint_16);
+void SkipNextIf_VxDoesNotEqual_Vy(uint_16);
+void Set_I_to_NN(uint_16);
+void Jump_ToAddressNNPlusV0(uint_16);
+void SetVx_To_RandomAndNN(uint_16);
+void DrawSprite(uint_16);
+void Skip_Instruction_If_Key_IsPressed(uint_16);
+void Skip_Instruction_If_Key_Not_Pressed(uint_16);
+void SetVXToDelayTimer(uint_16);
+void GetBlockingKeyPress(uint_16);
+void SetDelayTimer(uint_16);
+void SetSoundTimer(uint_16);
+void AddVx_To_I(uint_16);
+void Set_I_ToLocationOfSprite(uint_16);
+void StoreVx(uint_16);
+void StoreAllVs(uint_16);
+void FillAllVs(uint_16);
 
-void SetupNextTranslation(unsigned short);
+void SetupNextTranslation(uint_16);
 
 struct opcode {
-    unsigned short opcode;
-    void (*translate)(unsigned short);
+    uint_16 opcode;
+    void (*translate)(uint_16);
     int necessary_nibbles;
 };
 
@@ -153,7 +153,7 @@ void ExecuteNextOpCode()
     }
 }
 
-void SetupNextTranslation(unsigned short opcode)
+void SetupNextTranslation(uint_16 opcode)
 {
 
     BOOL translation_success = FALSE;
@@ -182,7 +182,7 @@ void SetupNextTranslation(unsigned short opcode)
 
 }
 
-BOOL First(unsigned short opcode, size_t opcodes_idx) 
+BOOL First(uint_16 opcode, size_t opcodes_idx) 
 {
     BOOL translated_opcode = FALSE;
 
@@ -196,7 +196,7 @@ BOOL First(unsigned short opcode, size_t opcodes_idx)
     return translated_opcode;
 }
 
-BOOL ExactOpcode(unsigned short opcode, size_t opcodes_idx) 
+BOOL ExactOpcode(uint_16 opcode, size_t opcodes_idx) 
 {
     BOOL translated_opcode = FALSE;
 
@@ -210,7 +210,7 @@ BOOL ExactOpcode(unsigned short opcode, size_t opcodes_idx)
     return translated_opcode;
 }
 
-BOOL FirstFourth(unsigned short opcode, size_t opcodes_idx) 
+BOOL FirstFourth(uint_16 opcode, size_t opcodes_idx) 
 {
     BOOL translated_opcode = FALSE;
 
@@ -226,7 +226,7 @@ BOOL FirstFourth(unsigned short opcode, size_t opcodes_idx)
     return translated_opcode;
 }
 
-BOOL FirstThirdFourth(unsigned short opcode, size_t opcodes_idx)
+BOOL FirstThirdFourth(uint_16 opcode, size_t opcodes_idx)
 {
     BOOL translated_opcode = FALSE;
 
@@ -244,14 +244,14 @@ BOOL FirstThirdFourth(unsigned short opcode, size_t opcodes_idx)
     return translated_opcode;
 }
 
-void DebugTranslateSingleInstruction(unsigned short opcode) 
+void DebugTranslateSingleInstruction(uint_16 opcode) 
 {
 
     SetupNextTranslation(opcode);
 
 }
 
-BOOL StubOpcode(unsigned short opcode) 
+BOOL StubOpcode(uint_16 opcode) 
 {
     BOOL translated_opcode = FALSE;
     printf("Reached stub function with opcode %04x\n", opcode);
@@ -259,41 +259,41 @@ BOOL StubOpcode(unsigned short opcode)
 
 }
 
-void ClearScreen(unsigned short opcode) 
+void ClearScreen(uint_16 opcode) 
 {
 
     ClearDrawScreen();
 
 }
 
-void Return(unsigned short opcode) 
+void Return(uint_16 opcode) 
 {
     SetReturnAddress();
 }
 
-void CallProg(unsigned short opcode) 
+void CallProg(uint_16 opcode) 
 {
 
 }
 
 // 1NNN
-void Jump(unsigned short opcode) 
+void Jump(uint_16 opcode) 
 {
 
     JumpToInstruction(0x0FFF & opcode);
 
 }
 
-void CallSubroutine(unsigned short opcode) 
+void CallSubroutine(uint_16 opcode) 
 {
     CallIntruction(0x0FFF & opcode);
 }
 
-void Skip_IfVx_EqualNN(unsigned short opcode) 
+void Skip_IfVx_EqualNN(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
-	unsigned char nn = (unsigned char)(0x00FF & opcode);
+	uint_8 x = GetNibble(opcode, 2);
+	uint_8 nn = (uint_8)(0x00FF & opcode);
 
 	if (v_regs[x] == nn) {
 
@@ -303,11 +303,11 @@ void Skip_IfVx_EqualNN(unsigned short opcode)
 
 }
 
-void Skip_IfVx_DoesNotEqualNN(unsigned short opcode) 
+void Skip_IfVx_DoesNotEqualNN(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
-	unsigned char nn = (unsigned char)(0x00FF & opcode);
+	uint_8 x = GetNibble(opcode, 2);
+	uint_8 nn = (uint_8)(0x00FF & opcode);
 
 	if (v_regs[x] != nn) {
 	
@@ -317,11 +317,11 @@ void Skip_IfVx_DoesNotEqualNN(unsigned short opcode)
 
 }
 
-void Skip_IfVx_Equal_Vy(unsigned short opcode) 
+void Skip_IfVx_Equal_Vy(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);	
-	unsigned char y = GetNibble(opcode, 3);
+	uint_8 x = GetNibble(opcode, 2);	
+	uint_8 y = GetNibble(opcode, 3);
 
 	if (v_regs[x] == v_regs[y]) {
 	
@@ -331,22 +331,22 @@ void Skip_IfVx_Equal_Vy(unsigned short opcode)
 
 }
 
-void Set_Vx_To_NN(unsigned short opcode) 
+void Set_Vx_To_NN(uint_16 opcode) 
 {
 
-	unsigned char x  = GetNibble(opcode, 2);
-	unsigned char nn = (unsigned char)(0x00FF & opcode);
+	uint_8 x  = GetNibble(opcode, 2);
+	uint_8 nn = (uint_8)(0x00FF & opcode);
 
 	v_regs[x] = nn;
 
 }
 
 // TODO check if carry
-void Add_NN_To_Vx(unsigned short opcode) 
+void Add_NN_To_Vx(uint_16 opcode) 
 {
 
-	unsigned char x  = GetNibble(opcode, 2);
-	unsigned char nn = (unsigned char)(0x00FF & opcode);
+	uint_8 x  = GetNibble(opcode, 2);
+	uint_8 nn = (uint_8)(0x00FF & opcode);
 
 	v_regs[x] += nn;
 
@@ -354,62 +354,62 @@ void Add_NN_To_Vx(unsigned short opcode)
 
 // Set Vx To Vy
 // 8XY0 Sets VX to value of VY
-void Vx_ToVy(unsigned short opcode) 
+void Vx_ToVy(uint_16 opcode) 
 {
 	
-	unsigned char x = GetNibble(opcode, 2);
-	unsigned char y = GetNibble(opcode, 3);
+	uint_8 x = GetNibble(opcode, 2);
+	uint_8 y = GetNibble(opcode, 3);
 
 	v_regs[x] = v_regs[y];	
 
 }
 
-void Vx_To_VxOrVy(unsigned short opcode) 
+void Vx_To_VxOrVy(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
-	unsigned char y = GetNibble(opcode, 3);
+	uint_8 x = GetNibble(opcode, 2);
+	uint_8 y = GetNibble(opcode, 3);
 
 	v_regs[x] = v_regs[x] | v_regs[y];
 
 }
 
-void Vx_To_VxAndVy(unsigned short opcode) 
+void Vx_To_VxAndVy(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
-	unsigned char y = GetNibble(opcode, 3);
+	uint_8 x = GetNibble(opcode, 2);
+	uint_8 y = GetNibble(opcode, 3);
 
 	v_regs[x] = v_regs[x] & v_regs[y];
 
 }
 
-void Vx_To_VxXorVy(unsigned short opcode) 
+void Vx_To_VxXorVy(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
-	unsigned char y = GetNibble(opcode, 3);
+	uint_8 x = GetNibble(opcode, 2);
+	uint_8 y = GetNibble(opcode, 3);
 
 	v_regs[x] = v_regs[x] ^ v_regs[y];
 
 }
 
-void Add_Vy_To_VxCarry(unsigned short opcode) 
+void Add_Vy_To_VxCarry(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
-	unsigned char y = GetNibble(opcode, 3);
+	uint_8 x = GetNibble(opcode, 2);
+	uint_8 y = GetNibble(opcode, 3);
 
 	// TODO carry logic
 	v_regs[x] += v_regs[y];	
 
 }
 
-void Sub_Vy_From_VxBorrow(unsigned short opcode) 
+void Sub_Vy_From_VxBorrow(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
-	unsigned char y = GetNibble(opcode, 3);
+	uint_8 x = GetNibble(opcode, 2);
+	uint_8 y = GetNibble(opcode, 3);
 
 	// TODO borrow
 	v_regs[x] -= v_regs[y];
@@ -417,42 +417,42 @@ void Sub_Vy_From_VxBorrow(unsigned short opcode)
 }
 
 // 8XY6
-void Store_Least_Sig_Shift_Right(unsigned short opcode) 
+void Store_Least_Sig_Shift_Right(uint_16 opcode) 
 {
 
-    unsigned char x = GetNibble(opcode, 2);
+    uint_8 x = GetNibble(opcode, 2);
     v_regs[15]      = 0x0001 | v_regs[x];
     v_regs[x]       = v_regs[x] >> 1;
 
 }
 
 // 8XY7
-void Vx_To_VyMinusVxBorrow(unsigned short opcode) 
+void Vx_To_VyMinusVxBorrow(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
-	unsigned char y = GetNibble(opcode, 3);
+	uint_8 x = GetNibble(opcode, 2);
+	uint_8 y = GetNibble(opcode, 3);
 
 	// TODO borrow
 	v_regs[x] = v_regs[y] - v_regs[x];
 
 }
 
-void Store_Most_Sig_Shift_Left(unsigned short opcode) 
+void Store_Most_Sig_Shift_Left(uint_16 opcode) 
 {
 
-    unsigned char x = GetNibble(opcode, 2);
+    uint_8 x = GetNibble(opcode, 2);
     v_regs[15]      = 0x8000 | v_regs[x];
     v_regs[x]       = v_regs[x] << 1;
 
 }
 
 // 9XY0
-void SkipNextIf_VxDoesNotEqual_Vy(unsigned short opcode) 
+void SkipNextIf_VxDoesNotEqual_Vy(uint_16 opcode) 
 {
 
-    unsigned char x = GetNibble(opcode, 2);
-    unsigned char y = GetNibble(opcode, 3);
+    uint_8 x = GetNibble(opcode, 2);
+    uint_8 y = GetNibble(opcode, 3);
 
     if (v_regs[x] != v_regs[y]) {
 
@@ -463,50 +463,50 @@ void SkipNextIf_VxDoesNotEqual_Vy(unsigned short opcode)
 }
 
 // ANNN Sets I to the address of NNN
-void Set_I_to_NN(unsigned short opcode) 
+void Set_I_to_NN(uint_16 opcode) 
 {
 
-	unsigned short nnn = 0x0FFF & opcode;
+	uint_16 nnn = 0x0FFF & opcode;
 	I_reg = nnn;
 
 }
 
 // BNNN
-void Jump_ToAddressNNPlusV0(unsigned short opcode) 
+void Jump_ToAddressNNPlusV0(uint_16 opcode) 
 {
 
-    unsigned short nnn = 0x0FFF & opcode;
+    uint_16 nnn = 0x0FFF & opcode;
     JumpToInstruction(nnn + v_regs[0]);
 
 }
 
 // CXNN
-void SetVx_To_RandomAndNN(unsigned short opcode) 
+void SetVx_To_RandomAndNN(uint_16 opcode) 
 {
 
-    unsigned char x  = GetNibble(opcode, 2);
-    unsigned char nn = (unsigned char)(0x00FF & opcode);
-    unsigned char rn = rand()%256;
+    uint_8 x  = GetNibble(opcode, 2);
+    uint_8 nn = (uint_8)(0x00FF & opcode);
+    uint_8 rn = rand()%256;
 
     v_regs[x] = rn & nn;
 
 }
 
 // DXYN
-void DrawSprite(unsigned short opcode) 
+void DrawSprite(uint_16 opcode) 
 {
 
-    unsigned short x = v_regs[GetNibble(opcode, 2)];
-    unsigned short y = v_regs[GetNibble(opcode, 3)];
-    unsigned short n = GetNibble(opcode, 4);
+    uint_16 x = v_regs[GetNibble(opcode, 2)];
+    uint_16 y = v_regs[GetNibble(opcode, 3)];
+    uint_16 n = GetNibble(opcode, 4);
 
 }
 
 // EX9E
-void Skip_Instruction_If_Key_IsPressed(unsigned short opcode) 
+void Skip_Instruction_If_Key_IsPressed(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
+	uint_8 x = GetNibble(opcode, 2);
 	if (IsKeyPressed(v_regs[x])) {
 	
 		SkipNextInstruction();	
@@ -515,10 +515,10 @@ void Skip_Instruction_If_Key_IsPressed(unsigned short opcode)
 
 }
 
-void Skip_Instruction_If_Key_Not_Pressed(unsigned short opcode) 
+void Skip_Instruction_If_Key_Not_Pressed(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
+	uint_8 x = GetNibble(opcode, 2);
 	if (!IsKeyPressed(v_regs[x])) {
 	
 		SkipNextInstruction();
@@ -528,48 +528,48 @@ void Skip_Instruction_If_Key_Not_Pressed(unsigned short opcode)
 }
 
 // FX07
-void SetVXToDelayTimer(unsigned short opcode) 
+void SetVXToDelayTimer(uint_16 opcode) 
 {
 
-    unsigned char x = GetNibble(opcode, 2);
+    uint_8 x = GetNibble(opcode, 2);
     v_regs[x] = delay_timer;
 
 }
 
-void GetBlockingKeyPress(unsigned short opcode) 
+void GetBlockingKeyPress(uint_16 opcode) 
 {
 
 }
 
 // FX15
-void SetDelayTimer(unsigned short opcode) 
+void SetDelayTimer(uint_16 opcode) 
 {
 
-    unsigned char x = GetNibble(opcode, 2);
+    uint_8 x = GetNibble(opcode, 2);
     delay_timer = v_regs[x];
 
 }
 
 // FX18
-void SetSoundTimer(unsigned short opcode) 
+void SetSoundTimer(uint_16 opcode) 
 {
 
-    unsigned char x = GetNibble(opcode, 2);
+    uint_8 x = GetNibble(opcode, 2);
     sound_timer = v_regs[x];
 
 }
 
 // FX1E
-void AddVx_To_I(unsigned short opcode) 
+void AddVx_To_I(uint_16 opcode) 
 {
 
-	unsigned char x = GetNibble(opcode, 2);
+	uint_8 x = GetNibble(opcode, 2);
 	I_reg += v_regs[x];
 
 }
 
 // FX29 sets I to the location of the sprite for the character in VX. (Chars 0-F are represented by 4x5 font)
-void Set_I_ToLocationOfSprite(unsigned short opcode) 
+void Set_I_ToLocationOfSprite(uint_16 opcode) 
 {
 
     I_reg = v_regs[GetNibble(opcode, 2)] * 5;
@@ -577,10 +577,10 @@ void Set_I_ToLocationOfSprite(unsigned short opcode)
 }
 
 // FX33
-void StoreVx(unsigned short opcode) 
+void StoreVx(uint_16 opcode) 
 {
 
-    unsigned char x = GetNibble(opcode, 2);
+    uint_8 x = GetNibble(opcode, 2);
     for (int i = 2; i >= 0; i--) {
 
         SetValueAtAddress(GetSigDecimal(v_regs[x], i), I_reg);
@@ -592,11 +592,11 @@ void StoreVx(unsigned short opcode)
 }
 
 // FX55 Stores V0 to VX in memory starting at address I
-void StoreAllVs(unsigned short opcode) 
+void StoreAllVs(uint_16 opcode) 
 {
 
 	size_t x                  = GetNibble(opcode, 2);
-    unsigned short I_reg_temp = I_reg;
+    uint_16 I_reg_temp = I_reg;
 
     for (size_t i = 0;i < x; i++) {
 
@@ -607,11 +607,11 @@ void StoreAllVs(unsigned short opcode)
 
 }
 
-void FillAllVs(unsigned short opcode) 
+void FillAllVs(uint_16 opcode) 
 {
 
 	size_t x                  = GetNibble(opcode, 2);
-    unsigned short I_reg_temp = I_reg;
+    uint_16 I_reg_temp = I_reg;
     for (size_t i = x; i >= 0; i--) {
 
         v_regs[i]   = GetValueAtAddress(I_reg_temp);
@@ -621,25 +621,25 @@ void FillAllVs(unsigned short opcode)
 
 }
 
-unsigned char GetNibble(unsigned short opcode, unsigned short nibble) 
+uint_8 GetNibble(uint_16 opcode, uint_16 nibble) 
 {
 
 	switch (nibble) {
 	
 	case 1:
-		return (unsigned char)((0xF000 & opcode) >> 12);
+		return (uint_8)((0xF000 & opcode) >> 12);
 	break;
 
 	case 2:
-		return (unsigned char)((0x0F00 & opcode) >> 8);
+		return (uint_8)((0x0F00 & opcode) >> 8);
 	break;
 
 	case 3:
-		return (unsigned char)((0x00F0 & opcode) >> 4);
+		return (uint_8)((0x00F0 & opcode) >> 4);
 	break;
 
 	case 4:
-		return (unsigned char)((0x000F & opcode));
+		return (uint_8)((0x000F & opcode));
 	break;	
 
 	}
@@ -650,11 +650,11 @@ unsigned char GetNibble(unsigned short opcode, unsigned short nibble)
 
 }
 
-unsigned short GetSigDecimal(unsigned short value, int place) 
+uint_16 GetSigDecimal(uint_16 value, int place) 
 {
 
-    unsigned short denominator = pow(10, place);
-    unsigned short sig_digit   = value / denominator;
+    uint_16 denominator = pow(10, place);
+    uint_16 sig_digit   = value / denominator;
 
     return sig_digit % 10;
 
