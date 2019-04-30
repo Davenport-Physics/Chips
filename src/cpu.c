@@ -62,7 +62,7 @@ void SkipNextIf_VxDoesNotEqual_Vy(unsigned short);
 void Set_I_to_NN(unsigned short);
 void Jump_ToAddressNNPlusV0(unsigned short);
 void SetVx_To_RandomAndNN(unsigned short);
-void DrawSrite(unsigned short);
+void DrawSprite(unsigned short);
 void Skip_Instruction_If_Key_IsPressed(unsigned short);
 void Skip_Instruction_If_Key_Not_Pressed(unsigned short);
 void SetVXToDelayTimer(unsigned short);
@@ -108,7 +108,7 @@ static const struct opcode opcodes[35] =
     {0xA000, &Set_I_to_NN                        , FIRST}, // ANNN Sets I to the address of NN
     {0xB000, &Jump_ToAddressNNPlusV0             , FIRST}, // BNNN Jumps to the address [NNN + V0]
     {0xC000, &SetVx_To_RandomAndNN               , FIRST}, // CXNN Sets VX to the result of a bitwise AND operation on a random number 0-255 and NN
-    {0xD000, &DrawSrite                          , FIRST}, // DXYN Draws a sprite at (VX, VY) with width of 8 and N height in N pixels.
+    {0xD000, &DrawSprite                          , FIRST}, // DXYN Draws a sprite at (VX, VY) with width of 8 and N height in N pixels.
     {0xE09E, &Skip_Instruction_If_Key_IsPressed  , FTF_NIBS}, // EX9E Skips the instruction if key stored in VX is pressed
     {0xE0A1, &Skip_Instruction_If_Key_Not_Pressed, FTF_NIBS}, // EXA1 Skips next instruction ifkey stores in VX isn't pressed
     {0xF007, &SetVXToDelayTimer                  , FTF_NIBS}, // FX07 Sets VX to the value of the delay timer
@@ -485,8 +485,13 @@ void SetVx_To_RandomAndNN(unsigned short opcode)
 
 }
 
-void DrawSrite(unsigned short opcode) 
+// DXYN
+void DrawSprite(unsigned short opcode) 
 {
+
+    unsigned short x = v_regs[GetNibble(opcode, 2)];
+    unsigned short y = v_regs[GetNibble(opcode, 3)];
+    unsigned short n = GetNibble(opcode, 4);
 
 }
 
