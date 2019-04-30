@@ -519,6 +519,14 @@ void DrawSprite(uint_16 opcode)
     uint_16 y = v_regs[GetNibble(opcode, 3)];
     uint_16 n = GetNibble(opcode, 4);
 
+    int_8 bits_to_draw[n];
+    for (size_t i = 0; i < n;i++) {
+
+        bits_to_draw[i] = GetValueAtAddress(I_reg + i);
+
+    }
+    DrawPixels(x, y, bits_to_draw, n);
+
 }
 
 // EX9E

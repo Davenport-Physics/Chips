@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <SDL.h>
 
+#include "shared.h"
+
 
 SDL_Window *sdl_window;
+SDL_Renderer *sdl_render;
 
 void CreateWindow() 
 {
@@ -12,8 +15,10 @@ void CreateWindow()
     if (sdl_window == NULL) {
 
         SDL_Log("Could not create window: %s\n", SDL_GetError());
+        exit(0);
 
     }
+    sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_SOFTWARE);
 
 }
 
@@ -27,7 +32,6 @@ void InitDraw()
 
     }
     CreateWindow();
-
 
 }
 
@@ -46,9 +50,11 @@ void ClearDrawScreen()
 
 }
 
-void DrawPixels() 
+void DrawPixels(int_8 x, int_8 y, int_8* bits_to_draw, int_8 height) 
 {
 
-
+    // TODO translate bits_to_draw
+    SDL_Rect rect;
+    SDL_RenderDrawRect(sdl_render, &rect);
 
 }
