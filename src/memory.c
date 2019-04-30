@@ -197,20 +197,16 @@ uint_16 GetNextOpCode()
     
 }
 
-void SetValueAtAddress(uint_16 value, uint_16 address) 
+void SetValueAtAddress(char value, uint_16 address) 
 {
 
-	uint_8 high = (uint_8)((0xFF00 & value) >> 8);
-	uint_8 low  = (uint_8)(0x00FF & value);
-
-	memory[address]   = high;
-	memory[address+1] = low;
+	memory[address] = value;
 
 }
 
 uint_16 GetValueAtAddress(uint_16 address) 
 {
 
-	return (memory[address-1] << 8) | memory[address];
+	return memory[address];
 
 }

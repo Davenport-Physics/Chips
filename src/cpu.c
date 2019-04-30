@@ -20,7 +20,7 @@ static const int ALL_NIBS = FIRST | SECOND | THIRD | FOURTH;
 static const int FF_NIBS  = FIRST | FOURTH;
 static const int FTF_NIBS = FIRST | THIRD | FOURTH;
 
-static uint_16 v_regs[16];
+static char v_regs[16];
 static uint_16 I_reg          = 0;
 static uint_16 sound_timer    = 0;
 static uint_16 delay_timer    = 0;
@@ -32,7 +32,7 @@ BOOL FirstFourth(uint_16 opcode, size_t opcodes_idx);
 BOOL FirstThirdFourth(uint_16 opcode, size_t opcodes_idx);
 
 uint_8 GetNibble(uint_16 opcode, uint_16 nibble);
-uint_16 GetSigDecimal(uint_16, int);
+uint_16 GetSigDecimal(char, int);
 
 /* Register functions */
 void ClearScreen(uint_16);
@@ -341,7 +341,6 @@ void Set_Vx_To_NN(uint_16 opcode)
 
 }
 
-// TODO check if carry
 void Add_NN_To_Vx(uint_16 opcode) 
 {
 
@@ -411,7 +410,10 @@ void Sub_Vy_From_VxBorrow(uint_16 opcode)
 	uint_8 x = GetNibble(opcode, 2);
 	uint_8 y = GetNibble(opcode, 3);
 
-	// TODO borrow
+    // TODO borrow
+	if (v_regs[x] < v_regs[y]) {
+        v_regs[15] = 1;
+    }
 	v_regs[x] -= v_regs[y];
 
 }
@@ -506,8 +508,7 @@ void DrawSprite(uint_16 opcode)
 void Skip_Instruction_If_Key_IsPressed(uint_16 opcode) 
 {
 
-	uint_8 x = GetNibble(opcode, 2);
-	if (IsKeyPressed(v_regs[x])) {
+	if (IsKeyPressed(v_regs[GetNibble(opcode, 2)])) {
 	
 		SkipNextInstruction();	
 	
@@ -518,8 +519,7 @@ void Skip_Instruction_If_Key_IsPressed(uint_16 opcode)
 void Skip_Instruction_If_Key_Not_Pressed(uint_16 opcode) 
 {
 
-	uint_8 x = GetNibble(opcode, 2);
-	if (!IsKeyPressed(v_regs[x])) {
+	if (!IsKeyPressed(v_regs[GetNibble(opcode, 2)])) {
 	
 		SkipNextInstruction();
 	
@@ -531,8 +531,7 @@ void Skip_Instruction_If_Key_Not_Pressed(uint_16 opcode)
 void SetVXToDelayTimer(uint_16 opcode) 
 {
 
-    uint_8 x = GetNibble(opcode, 2);
-    v_regs[x] = delay_timer;
+    v_regs[GetNibble(opcode, 2)] = delay_timer;
 
 }
 
@@ -547,8 +546,7 @@ void GetBlockingKeyPress(uint_16 opcode)
 void SetDelayTimer(uint_16 opcode) 
 {
 
-    uint_8 x = GetNibble(opcode, 2);
-    delay_timer = v_regs[x];
+    delay_timer = v_regs[GetNibble(opcode, 2)];
 
 }
 
@@ -556,8 +554,7 @@ void SetDelayTimer(uint_16 opcode)
 void SetSoundTimer(uint_16 opcode) 
 {
 
-    uint_8 x = GetNibble(opcode, 2);
-    sound_timer = v_regs[x];
+    sound_timer = v_regs[GetNibble(opcode, 2)];
 
 }
 
@@ -565,8 +562,7 @@ void SetSoundTimer(uint_16 opcode)
 void AddVx_To_I(uint_16 opcode) 
 {
 
-	uint_8 x = GetNibble(opcode, 2);
-	I_reg += v_regs[x];
+	I_reg += v_regs[GetNibble(opcode, 2)];
 
 }
 
@@ -597,13 +593,13 @@ void StoreVx(uint_16 opcode)
 void StoreAllVs(uint_16 opcode) 
 {
 
-	size_t x                  = GetNibble(opcode, 2);
+	size_t x           = GetNibble(opcode, 2);
     uint_16 I_reg_temp = I_reg;
 
     for (size_t i = 0;i < x; i++) {
 
 		SetValueAtAddress(v_regs[i], I_reg_temp);
-		I_reg_temp += 2;
+		I_reg_temp++;
 
     }
 
@@ -617,7 +613,7 @@ void FillAllVs(uint_16 opcode)
     for (size_t i = x; i >= 0; i--) {
 
         v_regs[i]   = GetValueAtAddress(I_reg_temp);
-		I_reg_temp -= 2;
+		I_reg_temp--;
 
     }
 
@@ -652,11 +648,11 @@ uint_8 GetNibble(uint_16 opcode, uint_16 nibble)
 
 }
 
-uint_16 GetSigDecimal(uint_16 value, int place) 
+uint_16 GetSigDecimal(char value, int place) 
 {
 
-    uint_16 denominator = pow(10, place);
-    uint_16 sig_digit   = value / denominator;
+    char denominator = pow(10, place);
+    char sig_digit   = abs(value) / denominator;
 
     return sig_digit % 10;
 
