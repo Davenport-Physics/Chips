@@ -43,18 +43,27 @@ void QuitDraw()
 
 }
 
-void ClearDrawScreen() 
-{
-
-
-
-}
-
 void DrawPixels(int_8 x, int_8 y, int_8* bits_to_draw, int_8 height) 
 {
 
     // TODO translate bits_to_draw
     SDL_Rect rect;
     SDL_RenderDrawRect(sdl_render, &rect);
+}
+
+void ClearDrawScreen() 
+{
+
+    SDL_SetRenderDrawColor(sdl_render, 0, 0, 0, 255);
+    SDL_RenderClear(sdl_render);
+
+
+}
+
+void DrawScreen() 
+{
+
+    SDL_RenderPresent(sdl_render);
+
 
 }
