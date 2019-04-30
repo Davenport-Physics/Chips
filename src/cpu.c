@@ -277,6 +277,8 @@ void Return(uint_16 opcode)
 void CallProg(uint_16 opcode) 
 {
 
+    printf("CallProg STUB. opcode = %04x", opcode);
+
 }
 
 // 1NNN
@@ -402,8 +404,23 @@ void Add_Vy_To_VxCarry(uint_16 opcode)
 	uint_8 x = GetNibble(opcode, 2);
 	uint_8 y = GetNibble(opcode, 3);
 
-	// TODO carry logic
+    short temp = (short)v_regs[x] + (short)v_regs[y];
+    if (temp > 0xFF)
+        v_regs[15] = 1;
+    else
+        v_regs[15] = 0;
+
 	v_regs[x] += v_regs[y];	
+
+}
+
+void SetVFIfBorrowing(char x, char y) 
+{
+
+    if (x < y)
+        v_regs[15] = 0;
+    else
+        v_regs[15] = 1;
 
 }
 
@@ -413,10 +430,7 @@ void Sub_Vy_From_VxBorrow(uint_16 opcode)
 	uint_8 x = GetNibble(opcode, 2);
 	uint_8 y = GetNibble(opcode, 3);
 
-    // TODO borrow
-	if (v_regs[x] < v_regs[y]) {
-        v_regs[15] = 1;
-    }
+    SetVFIfBorrowing(v_regs[x], v_regs[y]);
 	v_regs[x] -= v_regs[y];
 
 }
@@ -425,9 +439,9 @@ void Sub_Vy_From_VxBorrow(uint_16 opcode)
 void Store_Least_Sig_Shift_Right(uint_16 opcode) 
 {
 
-    uint_8 x = GetNibble(opcode, 2);
-    v_regs[15]      = 0x0001 | v_regs[x];
-    v_regs[x]       = v_regs[x] >> 1;
+    uint_8 x   = GetNibble(opcode, 2);
+    v_regs[15] = 0x0001 | v_regs[x];
+    v_regs[x]  = v_regs[x] >> 1;
 
 }
 
@@ -438,7 +452,7 @@ void Vx_To_VyMinusVxBorrow(uint_16 opcode)
 	uint_8 x = GetNibble(opcode, 2);
 	uint_8 y = GetNibble(opcode, 3);
 
-	// TODO borrow
+	SetVFIfBorrowing(v_regs[y], v_regs[x]);
 	v_regs[x] = v_regs[y] - v_regs[x];
 
 }
