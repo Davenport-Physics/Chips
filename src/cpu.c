@@ -8,6 +8,7 @@
 #include "controls.h"
 #include "shared.h"
 #include "draw.h"
+#include "sound.h"
 
 // from left to right.
 static const int FIRST  = 1;
@@ -134,13 +135,19 @@ void ExecuteNextOpCode()
 {
     SetupNextTranslation(GetNextOpCode());
 
-    if (delay_timer > 0)
+    if (delay_timer > 0) {
+
         delay_timer--;
+
+    }
 
     if (sound_timer > 0) {
 
-        if (sound_timer == 1)
-            printf("STUB BEEP\n");
+        if (sound_timer == 1) {
+
+            PlayBeep();
+            
+        }
         sound_timer--;
 
     }
