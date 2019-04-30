@@ -11,14 +11,14 @@
 #include "sound.h"
 
 // from left to right.
-static const int FIRST  = 1;
-static const int SECOND = 2;
-static const int THIRD  = 4;
-static const int FOURTH = 8;
+static const uint_16 FIRST  = 1;
+static const uint_16 SECOND = 2;
+static const uint_16 THIRD  = 4;
+static const uint_16 FOURTH = 8;
 
-static const int ALL_NIBS = FIRST | SECOND | THIRD | FOURTH;
-static const int FF_NIBS  = FIRST | FOURTH;
-static const int FTF_NIBS = FIRST | THIRD | FOURTH;
+static const uint_16 ALL_NIBS = FIRST | SECOND | THIRD | FOURTH;
+static const uint_16 FF_NIBS  = FIRST | FOURTH;
+static const uint_16 FTF_NIBS = FIRST | THIRD | FOURTH;
 
 static char v_regs[16];
 static uint_16 I_reg          = 0;
@@ -81,7 +81,7 @@ void SetupNextTranslation(uint_16);
 struct opcode {
     uint_16 opcode;
     void (*translate)(uint_16);
-    int necessary_nibbles;
+    uint_16 necessary_nibbles;
 };
 
 static const struct opcode opcodes[35] = 
@@ -159,24 +159,27 @@ void SetupNextTranslation(uint_16 opcode)
     BOOL translation_success = FALSE;
     for (int i = 0; i < 35; i++) {
 
-		if (opcodes[i].necessary_nibbles == FIRST) 
+		if (opcodes[i].necessary_nibbles) 
 		{
 
-			First(opcode, i);
+			translation_success = First(opcode, i);
 
 		} else if (opcodes[i].necessary_nibbles == ALL_NIBS) {
 
-			ExactOpcode(opcode, i);
+			translation_success = ExactOpcode(opcode, i);
 
 		} else if (opcodes[i].necessary_nibbles == FF_NIBS) {
 
-			FirstFourth(opcode, i);
+			translation_success = FirstFourth(opcode, i);
 
 		} else if (opcodes[i].necessary_nibbles == FTF_NIBS) {
 
-			FirstThirdFourth(opcode, i);
+			translation_success = FirstThirdFourth(opcode, i);
 
 		}
+
+        if (translation_success)
+            break;
 
     }
 
@@ -608,11 +611,12 @@ void StoreAllVs(uint_16 opcode)
 void FillAllVs(uint_16 opcode) 
 {
 
-	size_t x                  = GetNibble(opcode, 2);
+	size_t x           = GetNibble(opcode, 2);
     uint_16 I_reg_temp = I_reg;
+
     for (size_t i = x; i >= 0; i--) {
 
-        v_regs[i]   = GetValueAtAddress(I_reg_temp);
+        v_regs[i] = GetValueAtAddress(I_reg_temp);
 		I_reg_temp--;
 
     }

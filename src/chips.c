@@ -13,6 +13,9 @@ int main(int argc, char **argv)
     InitializeCPU();
     InitDraw();
     DebugTranslateSingleInstruction(0xF033);
+    while (1) {
+        ExecuteNextOpCode();
+    }
     QuitDraw();
 
 }

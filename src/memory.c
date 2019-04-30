@@ -204,7 +204,7 @@ void SetValueAtAddress(char value, uint_16 address)
 
 }
 
-uint_16 GetValueAtAddress(uint_16 address) 
+char GetValueAtAddress(uint_16 address) 
 {
 
 	return memory[address];
