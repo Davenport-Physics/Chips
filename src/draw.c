@@ -8,7 +8,7 @@ SDL_Window *sdl_window;
 void CreateWindow() 
 {
 
-    sdl_window = SDL_CreateWindow("Chips", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 64, 32, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL);
+    sdl_window = SDL_CreateWindow("Chips", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL);
     if (sdl_window == NULL) {
 
         SDL_Log("Could not create window: %s\n", SDL_GetError());
