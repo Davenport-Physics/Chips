@@ -146,7 +146,7 @@ void ExecuteNextOpCode()
         if (sound_timer == 1) {
 
             PlayBeep();
-            
+
         }
         sound_timer--;
 
@@ -572,7 +572,7 @@ void AddVx_To_I(unsigned short opcode)
 void Set_I_ToLocationOfSprite(unsigned short opcode) 
 {
 
-    I = v_regs[GetNibble(opcode, 2)] * 5;
+    I_reg = v_regs[GetNibble(opcode, 2)] * 5;
 
 }
 
