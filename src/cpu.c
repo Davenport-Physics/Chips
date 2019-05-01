@@ -20,7 +20,7 @@ static const uint_16 ALL_NIBS = FIRST | SECOND | THIRD | FOURTH;
 static const uint_16 FF_NIBS  = FIRST | FOURTH;
 static const uint_16 FTF_NIBS = FIRST | THIRD | FOURTH;
 
-static char v_regs[16];
+static uint_8 v_regs[16];
 static uint_16 I_reg          = 0;
 static uint_16 sound_timer    = 0;
 static uint_16 delay_timer    = 0;
@@ -511,6 +511,21 @@ void SetVx_To_RandomAndNN(uint_16 opcode)
 
 }
 
+void HandleCollisions() 
+{
+    
+    if(CollisionDetected()) {
+
+        v_regs[15] = 1;
+
+    } else {
+
+        v_regs[15] = 0;
+
+    }
+
+}
+
 // DXYN
 void DrawSprite(uint_16 opcode) 
 {
@@ -526,6 +541,8 @@ void DrawSprite(uint_16 opcode)
 
     }
     DrawPixels(x, y, bits_to_draw, n);
+    HandleCollisions();
+
 
 }
 

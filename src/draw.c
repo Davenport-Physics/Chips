@@ -5,8 +5,11 @@
 #include "shared.h"
 
 
-SDL_Window *sdl_window;
-SDL_Renderer *sdl_render;
+static SDL_Window *sdl_window;
+static SDL_Renderer *sdl_render;
+
+static SDL_Rect rects[256];
+static uint_16 num_rects = 0;
 
 void ClearDrawScreen();
 
@@ -53,16 +56,38 @@ void RenderRectAtBitIfNecessary(uint_8 x, uint_8 y, uint_8 bit)
         return;
     }
 
-    SDL_Rect rect;
-    rect.x = x;
-    rect.y = y;
-    rect.w = 4;
-    rect.h = 5;
-    if (SDL_RenderFillRect(sdl_render, &rect) !=0 ) {
+    rects[num_rects].x = x;
+    rects[num_rects].y = y;
+    rects[num_rects].w = 4;
+    rects[num_rects].h = 5;
+    if (SDL_RenderFillRect(sdl_render, &rects[num_rects]) !=0 ) {
 
         SDL_Log("Could not render Rect: %s\n", SDL_GetError());
+        exit(0);
 
     }
+    num_rects++;
+}
+
+BOOL CollisionDetected()
+{
+
+    // TODO optimize this later if possible.
+    for (size_t i = 0; i < num_rects-1; i++) {
+
+        for (size_t j = i+1; j < num_rects; j++) {
+
+            if (SDL_HasIntersection(&rects[i], &rects[j]) == SDL_TRUE) {
+
+                return TRUE;
+
+            }
+
+        }
+
+    }
+    return FALSE;
+
 }
 
 void DrawPixels(uint_8 x, uint_8 y, uint_8* bits_to_draw, uint_8 height) 
@@ -88,6 +113,7 @@ void ClearDrawScreen()
 
     SDL_SetRenderDrawColor(sdl_render, 0, 0, 0, 255);
     SDL_RenderClear(sdl_render);
+    num_rects = 0;
 
 }
 

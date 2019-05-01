@@ -52,7 +52,7 @@ void SetupReadOrExit(int argc, char **argv)
 
     } else {
 
-        printf("\nYou did not pass a file to be read\n");
+        printf("You did not pass a file to be read\n");
         exit(0);
 
     }
@@ -106,13 +106,13 @@ uint_16 pop(int num_bytes)
 
     if (stack_pointer < 0x0EA0) {
 
-        printf("\nStack underflow detected\n");
+        printf("Stack underflow detected\n");
         exit(0);
 
     }
     if (num_bytes > 2) {
 
-        printf("\nMay only pop 2 bytes or less\n");
+        printf("May only pop 2 bytes or less\n");
         exit(0);
 
     }
@@ -141,7 +141,7 @@ void push(uint_16 word)
 
     } else {
 
-        printf("\nStack overflow detected.\n");
+        printf("Stack overflow detected.\n");
         exit(0);
 
     }
@@ -153,7 +153,7 @@ void CheckMemPointerOutOfBounds()
 
     if (mem_pointer >= 4096) {
 
-        printf("\nmem_pointer is out of bounds\n");
+        printf("mem_pointer is out of bounds\n");
         exit(0);
 
     }

@@ -8,5 +8,6 @@ void QuitDraw();
 void ClearDrawScreen();
 void DrawScreen();
 void DrawPixels(uint_8 x, uint_8 y, uint_8* bits_to_draw, uint_8 height);
+BOOL CollisionDetected();
 
 #endif
