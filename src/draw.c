@@ -11,14 +11,14 @@ SDL_Renderer *sdl_render;
 void CreateWindow() 
 {
 
-    sdl_window = SDL_CreateWindow("Chips", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL);
+    sdl_window = SDL_CreateWindow("Chips", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_ALLOW_HIGHDPI);
     if (sdl_window == NULL) {
 
         SDL_Log("Could not create window: %s\n", SDL_GetError());
         exit(0);
 
     }
-    sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_SOFTWARE);
+    sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_SOFTWARE);
 
 }
 
@@ -43,12 +43,41 @@ void QuitDraw()
 
 }
 
+void RenderRectAtBitIfNecessary(int_8 x, int_8 y, int_8 bit) 
+{
+
+    if (bit == 0) {
+        return;
+    }
+
+    SDL_Rect rect;
+    rect.x = x;
+    rect.y = y;
+    rect.w = 4;
+    rect.h = 5;
+    if (SDL_RenderFillRect(sdl_render, &rect) !=0 ) {
+
+        SDL_Log("Could not render Rect: %s\n", SDL_GetError());
+
+    }
+}
+
 void DrawPixels(int_8 x, int_8 y, int_8* bits_to_draw, int_8 height) 
 {
 
-    // TODO translate bits_to_draw
-    SDL_Rect rect;
-    SDL_RenderDrawRect(sdl_render, &rect);
+    SDL_SetRenderDrawColor(sdl_render, 255, 255, 255, 255);
+    for (size_t i = 0; i < height;i++) {
+
+        int_8 temp = bits_to_draw[i];
+        for (size_t j = 0; j < 8; j++) {
+
+            temp = temp << j;
+            RenderRectAtBitIfNecessary(x+j*4, y+i*5, temp & 0x80);
+
+        }
+        
+    }
+    
 }
 
 void ClearDrawScreen() 
@@ -57,13 +86,11 @@ void ClearDrawScreen()
     SDL_SetRenderDrawColor(sdl_render, 0, 0, 0, 255);
     SDL_RenderClear(sdl_render);
 
-
 }
 
 void DrawScreen() 
 {
 
     SDL_RenderPresent(sdl_render);
-
 
 }

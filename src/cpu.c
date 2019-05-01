@@ -440,7 +440,7 @@ void Store_Least_Sig_Shift_Right(uint_16 opcode)
 {
 
     uint_8 x   = GetNibble(opcode, 2);
-    v_regs[15] = 0x0001 | v_regs[x];
+    v_regs[15] = 0x01 | v_regs[x];
     v_regs[x]  = v_regs[x] >> 1;
 
 }
@@ -461,7 +461,7 @@ void Store_Most_Sig_Shift_Left(uint_16 opcode)
 {
 
     uint_8 x = GetNibble(opcode, 2);
-    v_regs[15]      = 0x8000 | v_regs[x];
+    v_regs[15]      = 0x80 | v_regs[x];
     v_regs[x]       = v_regs[x] << 1;
 
 }
