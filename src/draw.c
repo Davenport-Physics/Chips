@@ -8,6 +8,8 @@
 SDL_Window *sdl_window;
 SDL_Renderer *sdl_render;
 
+void ClearDrawScreen();
+
 void CreateWindow() 
 {
 
@@ -19,6 +21,7 @@ void CreateWindow()
 
     }
     sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_SOFTWARE);
+    ClearDrawScreen();
 
 }
 
