@@ -515,11 +515,11 @@ void SetVx_To_RandomAndNN(uint_16 opcode)
 void DrawSprite(uint_16 opcode) 
 {
 
-    uint_16 x = v_regs[GetNibble(opcode, 2)];
-    uint_16 y = v_regs[GetNibble(opcode, 3)];
-    uint_16 n = GetNibble(opcode, 4);
+    uint_8 x = v_regs[GetNibble(opcode, 2)];
+    uint_8 y = v_regs[GetNibble(opcode, 3)];
+    uint_8 n = GetNibble(opcode, 4);
 
-    int_8 bits_to_draw[n];
+    uint_8 bits_to_draw[n];
     for (size_t i = 0; i < n;i++) {
 
         bits_to_draw[i] = GetValueAtAddress(I_reg + i);

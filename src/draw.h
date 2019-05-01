@@ -7,6 +7,6 @@ void InitDraw();
 void QuitDraw();
 void ClearDrawScreen();
 void DrawScreen();
-void DrawPixels(int_8 x, int_8 y, int_8* bits_to_draw, int_8 height);
+void DrawPixels(uint_8 x, uint_8 y, uint_8* bits_to_draw, uint_8 height);
 
 #endif

@@ -43,7 +43,7 @@ void QuitDraw()
 
 }
 
-void RenderRectAtBitIfNecessary(int_8 x, int_8 y, int_8 bit) 
+void RenderRectAtBitIfNecessary(uint_8 x, uint_8 y, uint_8 bit) 
 {
 
     if (bit == 0) {
@@ -62,7 +62,7 @@ void RenderRectAtBitIfNecessary(int_8 x, int_8 y, int_8 bit)
     }
 }
 
-void DrawPixels(int_8 x, int_8 y, int_8* bits_to_draw, int_8 height) 
+void DrawPixels(uint_8 x, uint_8 y, uint_8* bits_to_draw, uint_8 height) 
 {
 
     SDL_SetRenderDrawColor(sdl_render, 255, 255, 255, 255);
