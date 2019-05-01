@@ -156,10 +156,11 @@ void ExecuteNextOpCode()
 void SetupNextTranslation(uint_16 opcode)
 {
 
+    printf("Current opcode = %04x\n", opcode);
     BOOL translation_success = FALSE;
     for (int i = 0; i < 35; i++) {
 
-		if (opcodes[i].necessary_nibbles) 
+		if (opcodes[i].necessary_nibbles == FIRST) 
 		{
 
 			translation_success = First(opcode, i);
@@ -182,6 +183,7 @@ void SetupNextTranslation(uint_16 opcode)
             break;
 
     }
+    printf("-------\n");
 
 }
 
@@ -277,7 +279,7 @@ void Return(uint_16 opcode)
 void CallProg(uint_16 opcode) 
 {
 
-    printf("CallProg STUB. opcode = %04x", opcode);
+    printf("CallProg STUB. opcode = %04x\n", opcode);
 
 }
 
@@ -513,7 +515,7 @@ void SetVx_To_RandomAndNN(uint_16 opcode)
 
 void HandleCollisions() 
 {
-    
+
     if(CollisionDetected()) {
 
         v_regs[15] = 1;
@@ -529,7 +531,6 @@ void HandleCollisions()
 // DXYN
 void DrawSprite(uint_16 opcode) 
 {
-
     uint_8 x = v_regs[GetNibble(opcode, 2)];
     uint_8 y = v_regs[GetNibble(opcode, 3)];
     uint_8 n = GetNibble(opcode, 4);
@@ -550,8 +551,10 @@ void DrawSprite(uint_16 opcode)
 void Skip_Instruction_If_Key_IsPressed(uint_16 opcode) 
 {
 
+    printf("IsKeyPressed = %02x\n", v_regs[GetNibble(opcode, 2)]);
 	if (IsKeyPressed(v_regs[GetNibble(opcode, 2)])) {
 	
+        printf("Skipping next instruction because IsKeyPressed\n");
 		SkipNextInstruction();	
 	
 	}
@@ -561,8 +564,10 @@ void Skip_Instruction_If_Key_IsPressed(uint_16 opcode)
 void Skip_Instruction_If_Key_Not_Pressed(uint_16 opcode) 
 {
 
+    printf("IsNotKeyPressed = %02x\n", v_regs[GetNibble(opcode, 2)]);
 	if (!IsKeyPressed(v_regs[GetNibble(opcode, 2)])) {
 	
+        printf("Skipping next instruction because IsNotKeyPressed\n");
 		SkipNextInstruction();
 	
 	}
@@ -580,6 +585,7 @@ void SetVXToDelayTimer(uint_16 opcode)
 void GetBlockingKeyPress(uint_16 opcode) 
 {
 
+    printf("Awaiting keypress\n");
     v_regs[GetNibble(opcode, 2)] = AwaitKeyPress();
 
 }

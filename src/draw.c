@@ -93,6 +93,8 @@ BOOL CollisionDetected()
 void DrawPixels(uint_8 x, uint_8 y, uint_8* bits_to_draw, uint_8 height) 
 {
 
+    x *= 5;
+    y *= 5;
     SDL_SetRenderDrawColor(sdl_render, 255, 255, 255, 255);
     for (size_t i = 0; i < height;i++) {
 

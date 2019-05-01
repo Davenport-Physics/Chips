@@ -24,8 +24,10 @@ static uint_8 memory[4096] = {
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 
 };
-static uint_16 mem_pointer   = 512;
-static uint_16 stack_pointer = 0x0EA0;
+static uint_16 mem_pointer    = 512;
+static uint_16 stack_pointer  = 0x0EA0;
+static uint_16 last_byte      = 512;
+static uint_16 current_opcode = 0; 
 
 void SetupReadOrExit(int argc, char **argv);
 void ReadChipFile(char *file_name);
@@ -72,12 +74,10 @@ void ReadChipFile(char *file_name)
     FILE *fp = fopen(file_name, "rb");
     
     short c;
-    int i = 0;
-
     while ((c = getc(fp)) != EOF)  {
         
-        memory[512 + i] = (char)c;
-        i++;
+        memory[last_byte] = (char)c;
+        last_byte++;
 
     }
 
@@ -99,7 +99,7 @@ void DumpContentsOfMemoryToFile()
 
 }
 
-uint_16 pop(int num_bytes) 
+uint_16 Pop(int num_bytes) 
 {
 
     uint_16 value = 0;
@@ -112,7 +112,7 @@ uint_16 pop(int num_bytes)
     }
     if (num_bytes > 2) {
 
-        printf("May only pop 2 bytes or less\n");
+        printf("May only Pop 2 bytes or less\n");
         exit(0);
 
     }
@@ -126,12 +126,13 @@ uint_16 pop(int num_bytes)
 
 }
 
-void push(uint_16 word) 
+void Push(uint_16 word) 
 {
 
     uint_16 high_byte = ((word & 0xFF00) >> 8);
     uint_16 low_byte  = (word & 0x00FF);
 
+    printf("call_push = %02x%02x\n", high_byte, low_byte);
     if (stack_pointer < 0x0EFF) {
 
         memory[stack_pointer] = high_byte;
@@ -151,7 +152,8 @@ void push(uint_16 word)
 void CheckMemPointerOutOfBounds() 
 {
 
-    if (mem_pointer >= 4096) {
+    printf("mem_pointer = %d, last_byte = %d\n", mem_pointer, last_byte);
+    if (mem_pointer >= 4096 || mem_pointer == last_byte) {
 
         printf("mem_pointer is out of bounds\n");
         exit(0);
@@ -177,23 +179,27 @@ void JumpToInstruction(uint_16 location)
 
 void CallIntruction(uint_16 location) 
 {
-    push(mem_pointer+2);
+    printf("call_current_opcode = %04x\n", current_opcode);
+    printf("call_return_address = %04x\n", (memory[mem_pointer] << 8) | memory[mem_pointer+1]);
+    Push(mem_pointer);
     mem_pointer = location;
 
 }
 
 void SetReturnAddress() 
 {
-    mem_pointer = pop(2);
+    mem_pointer = Pop(2);
+    printf("return_address = %04x\n", mem_pointer);
 }
 
 uint_16 GetNextOpCode() 
 {
 
     CheckMemPointerOutOfBounds();
-    uint_16 opcode = (memory[mem_pointer] << 8) | memory[mem_pointer+1];
-    mem_pointer += 2;
-    return opcode;
+    current_opcode = (memory[mem_pointer] << 8) | memory[mem_pointer+1];
+    mem_pointer  += 2;
+
+    return current_opcode;
     
 }
 
@@ -204,6 +210,7 @@ void SetValueAtAddress(char value, uint_16 address)
 
 }
 
+// TODO check is char is appropriate here.
 char GetValueAtAddress(uint_16 address) 
 {
 
