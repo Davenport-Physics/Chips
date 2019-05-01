@@ -14,6 +14,6 @@ uint_16 Pop(int num_bytes);
 
 uint_16 GetNextOpCode();
 void SetValueAtAddress(unsigned short value, unsigned short address);
-char GetValueAtAddress(unsigned short address);
+uint_8 GetValueAtAddress(unsigned short address);
 
 #endif

@@ -211,7 +211,7 @@ void SetValueAtAddress(char value, uint_16 address)
 }
 
 // TODO check is char is appropriate here.
-char GetValueAtAddress(uint_16 address) 
+uint_8 GetValueAtAddress(uint_16 address) 
 {
 
 	return memory[address];

@@ -656,10 +656,10 @@ void StoreAllVs(uint_16 opcode)
 void FillAllVs(uint_16 opcode) 
 {
 
-	size_t x           = GetNibble(opcode, 2);
+	uint_8 x           = GetNibble(opcode, 2);
     uint_16 I_reg_temp = I_reg;
 
-    for (size_t i = x; i >= 0; i--) {
+    for (int i = x; i >= 0; i--) {
 
         v_regs[i] = GetValueAtAddress(I_reg_temp);
 		I_reg_temp--;
