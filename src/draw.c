@@ -12,12 +12,15 @@ static SDL_Renderer *sdl_render;
 static uint_8 display_bits[32][64];
 static uint_8 collision_detected = 0;
 
+static int pixel_width_multiplier  = 5;
+static int pixel_height_multiplier = 5;
+
 void ClearDrawScreen();
 
 void CreateWindow() 
 {
 
-    sdl_window = SDL_CreateWindow("Chips", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_ALLOW_HIGHDPI);
+    sdl_window = SDL_CreateWindow("Chips", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
     if (sdl_window == NULL) {
 
         DebugLog("Could not create window: %s\n", SDL_GetError());
@@ -70,8 +73,8 @@ void RenderRectAtBit(uint_16 x, uint_16 y, uint_8 bit)
     SDL_Rect rect;
     rect.x = x;
     rect.y = y;
-    rect.w = 5;
-    rect.h = 5;
+    rect.w = pixel_width_multiplier;
+    rect.h = pixel_height_multiplier;
     if (SDL_RenderFillRect(sdl_render, &rect) !=0 ) {
 
         DebugLog("Could not render Rect: %s\n", SDL_GetError());
@@ -136,11 +139,20 @@ void RenderCurrentDisplayBits()
 
         for (size_t j = 0;j < 64;j++) {
 
-            RenderRectAtBit(j*5, i*5, display_bits[i][j]);
+            RenderRectAtBit(j*pixel_width_multiplier, i*pixel_height_multiplier, display_bits[i][j]);
 
         }
 
     }
+
+}
+
+void SetMultipliers() 
+{
+
+    SDL_GetWindowSize(sdl_window, &pixel_width_multiplier, &pixel_height_multiplier);
+    pixel_width_multiplier  = pixel_width_multiplier  >> 6;
+    pixel_height_multiplier = pixel_height_multiplier >> 5;
 
 }
 
@@ -149,6 +161,8 @@ void DrawScreen()
 
     SDL_SetRenderDrawColor(sdl_render, 0, 0, 0, 255);
     SDL_RenderClear(sdl_render);
+
+    SetMultipliers();
 
     RenderCurrentDisplayBits();
     SDL_RenderPresent(sdl_render);
