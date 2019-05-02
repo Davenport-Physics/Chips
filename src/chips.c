@@ -23,7 +23,6 @@ void EventLoop()
         }
 
     }
-    SDL_Delay(refresh_rate);
 
 }
 

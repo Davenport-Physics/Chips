@@ -4,6 +4,8 @@
 #include <math.h>
 #include <string.h>
 
+#include "SDL.h"
+
 #include "memory.h"
 #include "controls.h"
 #include "shared.h"
@@ -520,15 +522,7 @@ void SetVx_To_RandomAndNN(uint_16 opcode)
 void HandleCollisions() 
 {
 
-    if(CollisionDetected()) {
-
-        v_regs[15] = 1;
-
-    } else {
-
-        v_regs[15] = 0;
-
-    }
+    v_regs[15] = CollisionDetected();
 
 }
 
@@ -569,7 +563,7 @@ void DrawSprite(uint_16 opcode)
         PrintBitsToDraw(bits_to_draw[i]);
     }
     DebugLog("END_DRAWING\n");
-    DrawPixels(x, y, bits_to_draw, n);
+    SetPixels(x, y, bits_to_draw, n);
     HandleCollisions();
 
 
