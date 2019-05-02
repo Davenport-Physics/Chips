@@ -15,5 +15,6 @@ typedef unsigned char uint_8;
 typedef unsigned short uint_16;
 
 void DebugLog(const char *, ...);
+void PrintBitsToDraw(uint_8 bits_to_draw);
 
 #endif

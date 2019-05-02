@@ -9,7 +9,7 @@ static SDL_Window *sdl_window;
 static SDL_Renderer *sdl_render;
 
 // Not an efficient use of memory.
-static uint_8 display_bits[64][32];
+static uint_8 display_bits[32][64];
 static uint_8 collision_detected = 0;
 
 void ClearDrawScreen();
@@ -26,6 +26,14 @@ void CreateWindow()
     }
     sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_SOFTWARE);
     ClearDrawScreen();
+
+}
+
+void ResetDisplayBits() 
+{
+
+    for (size_t i = 0;i < 32;i++)
+        memset(display_bits[i], 0, 64);
 
 }
 
@@ -50,11 +58,13 @@ void QuitDraw()
 
 }
 
-void RenderRectAtBitIfNecessary(uint_16 x, uint_16 y, uint_8 bit) 
+void RenderRectAtBit(uint_16 x, uint_16 y, uint_8 bit) 
 {
 
     if (bit == 0) {
-        return;
+        SDL_SetRenderDrawColor(sdl_render, 0, 0, 0, 255);
+    } else {
+        SDL_SetRenderDrawColor(sdl_render, 255, 255, 255, 255);
     }
 
     SDL_Rect rect;
@@ -78,17 +88,15 @@ uint_8 CollisionDetected()
 
 }
 
-void SetBit(uint_8 x, uint_8 y, uint_8 bit) 
+void SetBit(uint_8 y, uint_8 x, uint_8 bit) 
 {
 
-    if (bit != 0 && display_bits[x][y] != 0) {
+    uint_8 was_set     = display_bits[y][x];
+    display_bits[y][x] = display_bits[y][x] ^ bit;
+    DebugLog("bit = %d, display_bits = %d, x = %d, y = %d\n", bit, display_bits[y][x], x, y);
+    if (was_set != display_bits[y][x]) {
 
         collision_detected = 1;
-        display_bits[x][y] = 0;
-
-    } else { 
-
-        display_bits[x][y] = 1;
 
     }
 
@@ -103,7 +111,7 @@ void SetPixels(uint_8 x, uint_8 y, uint_8* bits_to_draw, uint_8 height)
         int_8 temp = bits_to_draw[i];
         for (size_t j = 0; j < 8; j++) {
 
-            SetBit(x, y, temp & 0x80);
+            SetBit(y + i, x + j, ((temp & 0x80) >> 7));
             temp = temp << 1;
 
         }
@@ -117,18 +125,18 @@ void ClearDrawScreen()
 
     SDL_SetRenderDrawColor(sdl_render, 0, 0, 0, 255);
     SDL_RenderClear(sdl_render);
+    ResetDisplayBits();
 
 }
 
 void RenderCurrentDisplayBits() 
 {
 
-    SDL_SetRenderDrawColor(sdl_render, 255, 255, 255, 255);
-    for (size_t i = 0; i < 64;i++) {
+    for (size_t i = 0; i < 32;i++) {
 
-        for (size_t j = 0;j < 32;i++) {
+        for (size_t j = 0;j < 64;j++) {
 
-            RenderRectAtBitIfNecessary(i*5, j*5, display_bits[i][j]);
+            RenderRectAtBit(j*5, i*5, display_bits[i][j]);
 
         }
 
@@ -139,7 +147,9 @@ void RenderCurrentDisplayBits()
 void DrawScreen() 
 {
 
-    ClearDrawScreen();
+    SDL_SetRenderDrawColor(sdl_render, 0, 0, 0, 255);
+    SDL_RenderClear(sdl_render);
+
     RenderCurrentDisplayBits();
     SDL_RenderPresent(sdl_render);
 

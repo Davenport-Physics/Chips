@@ -526,28 +526,6 @@ void HandleCollisions()
 
 }
 
-void PrintBitsToDraw(uint_8 bits_to_draw) 
-{
-
-    char bits[9];
-    bits[8] = '\0';
-    for (size_t i = 0; i < 8; i++) {
-
-        if ((bits_to_draw << i) & 0x80) {
-
-            bits[i] = '1';
-
-        } else {
-
-            bits[i] = '0';
-
-        }
-
-    }
-    DebugLog("%s\n", bits);
-
-}
-
 // DXYN
 void DrawSprite(uint_16 opcode) 
 {
