@@ -174,6 +174,9 @@ void SetupNextTranslation(uint_16 opcode)
     BOOL translation_success = FALSE;
     for (int i = 0; i < 35; i++) {
 
+        if ((opcodes[i].opcode & 0xF000) != (opcode & 0xF000))
+            continue;
+
 		if (opcodes[i].necessary_nibbles == FIRST) 
 			translation_success = First(opcode, i);
         else if (opcodes[i].necessary_nibbles == ALL_NIBS)
