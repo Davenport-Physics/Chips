@@ -15,6 +15,8 @@ void InitializeFilePointerIfNeeded()
 void DebugLog(const char *format, ...) 
 {
 
+#if DEBUGGING
+
     InitializeFilePointerIfNeeded();
     
     va_list args;
@@ -22,10 +24,14 @@ void DebugLog(const char *format, ...)
     vfprintf(fp, format, args);
     va_end(args);
 
+#endif
+
 }
 
 void PrintBitsToDraw(uint_8 bits_to_draw) 
 {
+
+#if DEBUGGING
 
     char bits[9];
     bits[8] = '\0';
@@ -43,5 +49,7 @@ void PrintBitsToDraw(uint_8 bits_to_draw)
 
     }
     DebugLog("%s\n", bits);
+    
+#endif
 
 }
