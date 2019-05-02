@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 project(Chips)
 
 find_package(SDL2 REQUIRED)
@@ -10,7 +10,16 @@ file(GLOB_RECURSE headers ${PROJECT_SOURCE_DIR}/src/*h)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     string(APPEND CMAKE_C_FLAGS " -lm")
+    string(APPEND CMAKE_C_FLAGS_DEBUG " -lm")
+    string(APPEND CMAKE_C_FLAGS_RELEASE " -lm")
 endif()
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DDEBUGGING)
+endif()
+
+string(APPEND CMAKE_C_FLAGS " -O3")
+string(APPEND CMAKE_C_FLAGS_RELEASE " -O3")
 
 add_executable(chips ${sources} ${headers})
 target_link_libraries(chips ${SDL2_LIBRARIES})
