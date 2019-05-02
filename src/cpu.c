@@ -153,6 +153,18 @@ void ExecuteNextOpCode()
     }
 }
 
+void LogRegisters() 
+{
+
+    for (size_t i = 0; i < 16; i++) {
+
+        DebugLog("V%02x = %02x\n", i, v_regs[i]);
+
+    }
+    DebugLog("I = %04x\n", I_reg);
+
+}
+
 void SetupNextTranslation(uint_16 opcode)
 {
 
@@ -161,28 +173,19 @@ void SetupNextTranslation(uint_16 opcode)
     for (int i = 0; i < 35; i++) {
 
 		if (opcodes[i].necessary_nibbles == FIRST) 
-		{
-
 			translation_success = First(opcode, i);
-
-		} else if (opcodes[i].necessary_nibbles == ALL_NIBS) {
-
+        else if (opcodes[i].necessary_nibbles == ALL_NIBS)
 			translation_success = ExactOpcode(opcode, i);
-
-		} else if (opcodes[i].necessary_nibbles == FF_NIBS) {
-
+        else if (opcodes[i].necessary_nibbles == FF_NIBS) 
 			translation_success = FirstFourth(opcode, i);
-
-		} else if (opcodes[i].necessary_nibbles == FTF_NIBS) {
-
+		else if (opcodes[i].necessary_nibbles == FTF_NIBS)
 			translation_success = FirstThirdFourth(opcode, i);
-
-		}
 
         if (translation_success)
             break;
 
     }
+    LogRegisters();
     DebugLog("-------\n");
 
 }

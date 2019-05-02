@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     InitializeMemory(argc, argv);
     InitializeCPU();
     InitDraw();
-    DebugTranslateSingleInstruction(0xF033);
+    //DebugTranslateSingleInstruction(0xF033);
 
     while (!end_program){
 

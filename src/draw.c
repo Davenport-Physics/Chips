@@ -49,7 +49,7 @@ void QuitDraw()
 
 }
 
-void RenderRectAtBitIfNecessary(uint_8 x, uint_8 y, uint_8 bit) 
+void RenderRectAtBitIfNecessary(uint_16 x, uint_16 y, uint_8 bit) 
 {
 
     if (bit == 0) {
@@ -93,16 +93,16 @@ BOOL CollisionDetected()
 void DrawPixels(uint_8 x, uint_8 y, uint_8* bits_to_draw, uint_8 height) 
 {
 
-    x *= 5;
-    y *= 5;
+    uint_16 x_16 = (uint_16)x * 5;
+    uint_16 y_16 = (uint_16)y * 5;
     SDL_SetRenderDrawColor(sdl_render, 255, 255, 255, 255);
     for (size_t i = 0; i < height;i++) {
 
         int_8 temp = bits_to_draw[i];
         for (size_t j = 0; j < 8; j++) {
 
-            temp = temp << j;
-            RenderRectAtBitIfNecessary(x+j*4, y+i*5, temp & 0x80);
+            RenderRectAtBitIfNecessary(x_16+j*5, y_16+i*5, temp & 0x80);
+            temp = temp << 1;
 
         }
         
