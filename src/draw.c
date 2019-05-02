@@ -27,7 +27,14 @@ void CreateWindow()
         exit(0);
 
     }
-    sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_SOFTWARE);
+    sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED);
+    if (sdl_render == NULL) {
+
+        DebugLog("Falling back to software rendering");
+        sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_SOFTWARE);
+        
+    }
+
     ClearDrawScreen();
 
 }
