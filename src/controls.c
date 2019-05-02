@@ -89,7 +89,7 @@ BOOL IsKeyPressed(uint_16 control)
     if (pressed[control].was_pressed) {
 
         clock_t current_clock_time = clock();
-        if ((current_clock_time - pressed[control].timestamp)/(CLOCKS_PER_MS) <= 100) {
+        if ((current_clock_time - pressed[control].timestamp)/(CLOCKS_PER_MS) <= 15) {
 
             return TRUE;
 

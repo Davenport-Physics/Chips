@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 #include "SDL.h"
 
@@ -125,6 +126,8 @@ static const struct opcode opcodes[35] =
     {0xF065, &FillAllVs                          , FTF_NIBS}  // FX65 Fills V0 to VX with values from memory starting at address I 
 };
 
+static struct timespec delay_clock;
+
 void InitializeCPU() 
 {
 
@@ -133,13 +136,29 @@ void InitializeCPU()
 
 }
 
+void HandleDecrementingDelayTimer() 
+{
+
+    struct timespec tp;
+    clock_gettime(CLOCK_REALTIME, &tp);
+
+    if ( tp.tv_sec - delay_clock.tv_sec != 0 || (tp.tv_nsec - delay_clock.tv_nsec) >= 13000000) {
+
+        clock_gettime(CLOCK_REALTIME, &delay_clock);
+        delay_timer--;
+
+    }
+
+}
+
 void ExecuteNextOpCode()
 {
     SetupNextTranslation(GetNextOpCode());
 
+
     if (delay_timer > 0) {
 
-        delay_timer--;
+        HandleDecrementingDelayTimer();
 
     }
 
@@ -598,6 +617,7 @@ void SetDelayTimer(uint_16 opcode)
 {
 
     delay_timer = v_regs[GetNibble(opcode, 2)];
+    clock_gettime(CLOCK_REALTIME, &delay_clock);
 
 }
 
