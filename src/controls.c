@@ -58,6 +58,14 @@ SDL_Scancode PollForScancode()
 
 }
 
+const uint_8 *PollForKeyStates() 
+{
+
+    SDL_PumpEvents();
+    return SDL_GetKeyboardState(NULL);
+
+}
+
 uint_8 GetTranslationOfScancodeIfAny(SDL_Scancode code) 
 {
 
@@ -133,12 +141,16 @@ void ProcessScanCodeForTimestamp(SDL_Scancode code)
 void ControlsLoop() 
 {
 
-    SDL_Scancode code = PollForScancode();
-    if (code != SDL_SCANCODE_AUDIONEXT) {
+    const uint_8 *key_states = PollForKeyStates();
+    for (size_t i = 0; i < 16; i++) {
 
-        ProcessScanCodeForTimestamp(code);
+        if (key_states[convert[i].code]) {
 
-    } 
+            ProcessScanCodeForTimestamp(convert[i].code);
+
+        }
+
+    }
 
 }
 
