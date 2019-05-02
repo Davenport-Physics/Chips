@@ -180,7 +180,7 @@ void JumpToInstruction(uint_16 location)
 void CallIntruction(uint_16 location) 
 {
     DebugLog("call_current_opcode = %04x\n", current_opcode);
-    DebugLog("call_return_address = %04x\n", (memory[mem_pointer] << 8) | memory[mem_pointer+1]);
+    DebugLog("call_return_opcode = %04x\n", (memory[mem_pointer] << 8) | memory[mem_pointer+1]);
     Push(mem_pointer);
     mem_pointer = location;
 

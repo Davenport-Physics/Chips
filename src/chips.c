@@ -11,7 +11,7 @@
 
 SDL_Event event;
 static BOOL end_program = FALSE;
-static int refresh_rate = 13;
+static int refresh_rate = 1;
 
 void EventLoop() 
 {
@@ -47,7 +47,6 @@ int main(int argc, char **argv)
     InitializeMemory(argc, argv);
     InitializeCPU();
     InitDraw();
-    //DebugTranslateSingleInstruction(0xF033);
 
     while (!end_program){
 

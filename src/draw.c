@@ -8,7 +8,7 @@
 static SDL_Window *sdl_window;
 static SDL_Renderer *sdl_render;
 
-static SDL_Rect rects[256];
+static SDL_Rect rects[1024];
 static uint_16 num_rects = 0;
 
 void ClearDrawScreen();
