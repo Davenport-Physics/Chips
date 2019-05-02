@@ -156,7 +156,7 @@ void ExecuteNextOpCode()
 void SetupNextTranslation(uint_16 opcode)
 {
 
-    printf("Current opcode = %04x\n", opcode);
+    DebugLog("Current opcode = %04x\n", opcode);
     BOOL translation_success = FALSE;
     for (int i = 0; i < 35; i++) {
 
@@ -183,7 +183,7 @@ void SetupNextTranslation(uint_16 opcode)
             break;
 
     }
-    printf("-------\n");
+    DebugLog("-------\n");
 
 }
 
@@ -259,7 +259,7 @@ void DebugTranslateSingleInstruction(uint_16 opcode)
 BOOL StubOpcode(uint_16 opcode) 
 {
     BOOL translated_opcode = FALSE;
-    printf("Reached stub function with opcode %04x\n", opcode);
+    DebugLog("Reached stub function with opcode %04x\n", opcode);
     return translated_opcode;
 
 }
@@ -267,6 +267,7 @@ BOOL StubOpcode(uint_16 opcode)
 void ClearScreen(uint_16 opcode) 
 {
 
+    DebugLog("Clearing Screen");
     ClearDrawScreen();
 
 }
@@ -279,7 +280,7 @@ void Return(uint_16 opcode)
 void CallProg(uint_16 opcode) 
 {
 
-    printf("CallProg STUB. opcode = %04x\n", opcode);
+    DebugLog("CallProg STUB. opcode = %04x\n", opcode);
 
 }
 
@@ -528,6 +529,28 @@ void HandleCollisions()
 
 }
 
+void PrintBitsToDraw(uint_8 bits_to_draw) 
+{
+
+    char bits[9];
+    bits[8] = '\0';
+    for (size_t i = 0; i < 8; i++) {
+
+        if ((bits_to_draw << i) & 0x80) {
+
+            bits[i] = '1';
+
+        } else {
+
+            bits[i] = '0';
+
+        }
+
+    }
+    DebugLog("%s\n", bits);
+
+}
+
 // DXYN
 void DrawSprite(uint_16 opcode) 
 {
@@ -536,11 +559,13 @@ void DrawSprite(uint_16 opcode)
     uint_8 n = GetNibble(opcode, 4);
 
     uint_8 bits_to_draw[n];
+    DebugLog("DRAWING\n");
     for (size_t i = 0; i < n;i++) {
 
         bits_to_draw[i] = GetValueAtAddress(I_reg + i);
-
+        PrintBitsToDraw(bits_to_draw[i]);
     }
+    DebugLog("END_DRAWING\n");
     DrawPixels(x, y, bits_to_draw, n);
     HandleCollisions();
 
@@ -551,10 +576,10 @@ void DrawSprite(uint_16 opcode)
 void Skip_Instruction_If_Key_IsPressed(uint_16 opcode) 
 {
 
-    printf("IsKeyPressed = %02x\n", v_regs[GetNibble(opcode, 2)]);
+    DebugLog("IsKeyPressed = %02x\n", v_regs[GetNibble(opcode, 2)]);
 	if (IsKeyPressed(v_regs[GetNibble(opcode, 2)])) {
 	
-        printf("Skipping next instruction because IsKeyPressed\n");
+        DebugLog("Skipping next instruction because IsKeyPressed\n");
 		SkipNextInstruction();	
 	
 	}
@@ -564,10 +589,10 @@ void Skip_Instruction_If_Key_IsPressed(uint_16 opcode)
 void Skip_Instruction_If_Key_Not_Pressed(uint_16 opcode) 
 {
 
-    printf("IsNotKeyPressed = %02x\n", v_regs[GetNibble(opcode, 2)]);
+    DebugLog("IsNotKeyPressed = %02x\n", v_regs[GetNibble(opcode, 2)]);
 	if (!IsKeyPressed(v_regs[GetNibble(opcode, 2)])) {
 	
-        printf("Skipping next instruction because IsNotKeyPressed\n");
+        DebugLog("Skipping next instruction because IsNotKeyPressed\n");
 		SkipNextInstruction();
 	
 	}
@@ -585,7 +610,7 @@ void SetVXToDelayTimer(uint_16 opcode)
 void GetBlockingKeyPress(uint_16 opcode) 
 {
 
-    printf("Awaiting keypress\n");
+    DebugLog("Awaiting keypress\n");
     v_regs[GetNibble(opcode, 2)] = AwaitKeyPress();
 
 }
@@ -691,7 +716,7 @@ uint_8 GetNibble(uint_16 opcode, uint_16 nibble)
 
 	}
 
-	printf("ERROR: nibble was passed with unusable value %d", nibble);
+	DebugLog("ERROR: nibble was passed with unusable value %d", nibble);
 	exit(0);
 	return 0;
 

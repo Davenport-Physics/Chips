@@ -1,8 +1,10 @@
 #include <stdio.h>
 
+#include "shared.h"
+
 void PlayBeep() 
 {
 
-    printf("PlayBeep STUB");
+    DebugLog("PlayBeep STUB\n");
 
 }

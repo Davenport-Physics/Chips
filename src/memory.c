@@ -49,12 +49,12 @@ void SetupReadOrExit(int argc, char **argv)
 
     if (argc > 1) {
 
-        printf("%s\n", argv[1]);
+        DebugLog("%s\n", argv[1]);
         ReadChipFile(argv[1]); // filename at argv[1]
 
     } else {
 
-        printf("You did not pass a file to be read\n");
+        DebugLog("You did not pass a file to be read\n");
         exit(0);
 
     }
@@ -106,13 +106,13 @@ uint_16 Pop(int num_bytes)
 
     if (stack_pointer < 0x0EA0) {
 
-        printf("Stack underflow detected\n");
+        DebugLog("Stack underflow detected\n");
         exit(0);
 
     }
     if (num_bytes > 2) {
 
-        printf("May only Pop 2 bytes or less\n");
+        DebugLog("May only Pop 2 bytes or less\n");
         exit(0);
 
     }
@@ -132,7 +132,7 @@ void Push(uint_16 word)
     uint_16 high_byte = ((word & 0xFF00) >> 8);
     uint_16 low_byte  = (word & 0x00FF);
 
-    printf("call_push = %02x%02x\n", high_byte, low_byte);
+    DebugLog("call_push = %02x%02x\n", high_byte, low_byte);
     if (stack_pointer < 0x0EFF) {
 
         memory[stack_pointer] = high_byte;
@@ -142,7 +142,7 @@ void Push(uint_16 word)
 
     } else {
 
-        printf("Stack overflow detected.\n");
+        DebugLog("Stack overflow detected.\n");
         exit(0);
 
     }
@@ -152,10 +152,10 @@ void Push(uint_16 word)
 void CheckMemPointerOutOfBounds() 
 {
 
-    printf("mem_pointer = %d, last_byte = %d\n", mem_pointer, last_byte);
+    DebugLog("mem_pointer = %d, last_byte = %d\n", mem_pointer, last_byte);
     if (mem_pointer >= 4096 || mem_pointer == last_byte) {
 
-        printf("mem_pointer is out of bounds\n");
+        DebugLog("mem_pointer is out of bounds\n");
         exit(0);
 
     }
@@ -179,8 +179,8 @@ void JumpToInstruction(uint_16 location)
 
 void CallIntruction(uint_16 location) 
 {
-    printf("call_current_opcode = %04x\n", current_opcode);
-    printf("call_return_address = %04x\n", (memory[mem_pointer] << 8) | memory[mem_pointer+1]);
+    DebugLog("call_current_opcode = %04x\n", current_opcode);
+    DebugLog("call_return_address = %04x\n", (memory[mem_pointer] << 8) | memory[mem_pointer+1]);
     Push(mem_pointer);
     mem_pointer = location;
 
@@ -189,7 +189,7 @@ void CallIntruction(uint_16 location)
 void SetReturnAddress() 
 {
     mem_pointer = Pop(2);
-    printf("return_address = %04x\n", mem_pointer);
+    DebugLog("return_address = %04x\n", mem_pointer);
 }
 
 uint_16 GetNextOpCode() 

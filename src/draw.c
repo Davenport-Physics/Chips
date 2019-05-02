@@ -19,7 +19,7 @@ void CreateWindow()
     sdl_window = SDL_CreateWindow("Chips", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_ALLOW_HIGHDPI);
     if (sdl_window == NULL) {
 
-        SDL_Log("Could not create window: %s\n", SDL_GetError());
+        DebugLog("Could not create window: %s\n", SDL_GetError());
         exit(0);
 
     }
@@ -33,7 +33,7 @@ void InitDraw()
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0) {
 
-        SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+        DebugLog("Unable to initialize SDL: %s", SDL_GetError());
         exit(0);
 
     }
@@ -62,7 +62,7 @@ void RenderRectAtBitIfNecessary(uint_8 x, uint_8 y, uint_8 bit)
     rects[num_rects].h = 5;
     if (SDL_RenderFillRect(sdl_render, &rects[num_rects]) !=0 ) {
 
-        SDL_Log("Could not render Rect: %s\n", SDL_GetError());
+        DebugLog("Could not render Rect: %s\n", SDL_GetError());
         exit(0);
 
     }

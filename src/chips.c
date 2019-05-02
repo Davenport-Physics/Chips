@@ -36,7 +36,7 @@ void InitRefreshRate()
         refresh_rate = (int)((1.0f/((float)mode.refresh_rate)) * 100.0f);
         
     }
-    printf("refresh_rate = %dhz\n", mode.refresh_rate);
+    DebugLog("refresh_rate = %dhz\n", mode.refresh_rate);
 
 }
 
