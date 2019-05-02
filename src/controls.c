@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 #include "SDL.h"
 #include "SDL_events.h"
@@ -15,15 +16,22 @@ typedef struct control_conversion {
 
 } controls;
 
+typedef struct controls_pressed {
+
+    BOOL was_pressed;
+    clock_t timestamp;
+
+} controls_pressed;
+
 static const controls convert[16] = 
 {
     {0x0, SDL_SCANCODE_1},
     {0x1, SDL_SCANCODE_2},
-    {0x2, SDL_SCANCODE_D},
+    {0x2, SDL_SCANCODE_S},
     {0x3, SDL_SCANCODE_3},
-    {0x4, SDL_SCANCODE_S},
+    {0x4, SDL_SCANCODE_A},
     {0x5, SDL_SCANCODE_4},
-    {0x6, SDL_SCANCODE_A},
+    {0x6, SDL_SCANCODE_D},
     {0x7, SDL_SCANCODE_Q},
     {0x8, SDL_SCANCODE_W},
     {0x9, SDL_SCANCODE_E},
@@ -35,6 +43,8 @@ static const controls convert[16] =
     {0xF, SDL_SCANCODE_V}
 };
 
+static controls_pressed pressed[16];
+static unsigned int CLOCKS_PER_MS = CLOCKS_PER_SEC / 1000;
 
 SDL_Scancode PollForScancode() 
 {
@@ -68,10 +78,18 @@ uint_8 GetTranslationOfScancodeIfAny(SDL_Scancode code)
 BOOL IsKeyPressed(uint_16 control) 
 {
 
-    SDL_Scancode code = PollForScancode();
-    if (code != SDL_SCANCODE_AUDIONEXT) {
+    if (pressed[control].was_pressed) {
 
-        return convert[control].code == code;
+        clock_t current_clock_time = clock();
+        if ((current_clock_time - pressed[control].timestamp)/(CLOCKS_PER_MS) <= 100) {
+
+            return TRUE;
+
+        } else {
+
+            pressed[control].was_pressed = FALSE;
+
+        }
 
     }
     return FALSE;
@@ -85,7 +103,6 @@ uint_8 AwaitKeyPress()
     while (!found_suitable_key) {
 
         control = GetTranslationOfScancodeIfAny(PollForScancode());
-        
         if (control != 0x11) {
 
             found_suitable_key = TRUE;
@@ -94,6 +111,34 @@ uint_8 AwaitKeyPress()
 
     }
     return control;
+
+}
+
+void ProcessScanCodeForTimestamp(SDL_Scancode code) 
+{
+
+    for (size_t i = 0; i < 16;i++) {
+
+        if (convert[i].code == code) {
+
+            pressed[i].was_pressed = TRUE;
+            pressed[i].timestamp   = clock();
+
+        }
+
+    }
+
+}
+
+void ControlsLoop() 
+{
+
+    SDL_Scancode code = PollForScancode();
+    if (code != SDL_SCANCODE_AUDIONEXT) {
+
+        ProcessScanCodeForTimestamp(code);
+
+    } 
 
 }
 

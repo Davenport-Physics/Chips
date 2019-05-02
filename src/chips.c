@@ -4,6 +4,7 @@
 #include "SDL_events.h"
 #include "SDL_keyboard.h"
 
+#include "controls.h"
 #include "memory.h"
 #include "cpu.h"
 #include "draw.h"
@@ -52,6 +53,7 @@ int main(int argc, char **argv)
         ExecuteNextOpCode();
         EventLoop();
         DrawScreen();
+        ControlsLoop();
 
     }
 

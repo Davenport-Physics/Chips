@@ -5,5 +5,6 @@
 
 BOOL IsKeyPressed(uint_16);
 uint_8 AwaitKeyPress();
+void ControlsLoop();
 
 #endif
