@@ -4,6 +4,7 @@
 #include "SDL_events.h"
 #include "SDL_keyboard.h"
 
+#include "sound.h"
 #include "controls.h"
 #include "memory.h"
 #include "cpu.h"
@@ -47,6 +48,7 @@ int main(int argc, char **argv)
     InitializeMemory(argc, argv);
     InitializeCPU();
     InitDraw();
+    InitSounds();
 
     while (!end_program){
 

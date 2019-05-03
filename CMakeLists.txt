@@ -4,7 +4,6 @@ project(Chips)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/Modules")
 
 find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 message(STATUS "SDL2_DIR = ${SDL2_INCLUDE_DIRS}")
 
@@ -25,4 +24,4 @@ string(APPEND CMAKE_C_FLAGS " -O3")
 string(APPEND CMAKE_C_FLAGS_RELEASE " -O3")
 
 add_executable(chips ${sources} ${headers})
-target_link_libraries(chips ${SDL2_LIBRARIES})
+target_link_libraries(chips ${SDL2_LIBRARIES} "-lSDL2_mixer")
