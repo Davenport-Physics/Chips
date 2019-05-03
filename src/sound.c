@@ -28,6 +28,14 @@ void InitSounds()
 
 }
 
+void QuitSounds() 
+{
+
+    Mix_FreeMusic(music);
+    Mix_CloseAudio();
+
+}
+
 void PlayBeep() 
 {
 

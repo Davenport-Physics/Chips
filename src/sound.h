@@ -2,6 +2,7 @@
 #define SOUND_H
 
 void InitSounds();
+void QuitSounds();
 void PlayBeep();
 
 #endif
