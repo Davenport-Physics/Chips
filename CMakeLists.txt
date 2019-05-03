@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 project(Chips)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/Modules")
+
 find_package(SDL2 REQUIRED)
+find_package(SDL2_mixer REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 message(STATUS "SDL2_DIR = ${SDL2_INCLUDE_DIRS}")
 
