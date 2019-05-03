@@ -27,13 +27,7 @@ void CreateWindow()
         exit(0);
 
     }
-    sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED);
-    if (sdl_render == NULL) {
-
-        DebugLog("Falling back to software rendering");
-        sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_SOFTWARE);
-        
-    }
+    sdl_render = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_SOFTWARE);
 
     ClearDrawScreen();
 
@@ -68,6 +62,7 @@ void QuitDraw()
 
 }
 
+static SDL_Rect rect;
 void RenderRectAtBit(uint_16 x, uint_16 y, uint_8 bit) 
 {
 
@@ -77,9 +72,8 @@ void RenderRectAtBit(uint_16 x, uint_16 y, uint_8 bit)
         SDL_SetRenderDrawColor(sdl_render, 255, 255, 255, 255);
     }
 
-    SDL_Rect rect;
-    rect.x = x;
-    rect.y = y;
+    rect.x = x * pixel_width_multiplier;
+    rect.y = y * pixel_height_multiplier;
     rect.w = pixel_width_multiplier;
     rect.h = pixel_height_multiplier;
     if (SDL_RenderFillRect(sdl_render, &rect) !=0 ) {
@@ -147,7 +141,7 @@ void RenderCurrentDisplayBits()
 
         for (size_t j = 0;j < 64;j++) {
 
-            RenderRectAtBit(j*pixel_width_multiplier, i*pixel_height_multiplier, display_bits[i][j]);
+            RenderRectAtBit(j, i, display_bits[i][j]);
 
         }
 
