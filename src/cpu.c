@@ -142,7 +142,7 @@ void HandleDecrementingDelayTimer()
     struct timespec tp;
     clock_gettime(CLOCK_REALTIME, &tp);
 
-    if ( tp.tv_sec - delay_clock.tv_sec != 0 || (tp.tv_nsec - delay_clock.tv_nsec) >= 13000000) {
+    if (labs(tp.tv_nsec - delay_clock.tv_nsec) >= 13000000 || tp.tv_sec - delay_clock.tv_sec != 0) {
 
         clock_gettime(CLOCK_REALTIME, &delay_clock);
         delay_timer--;

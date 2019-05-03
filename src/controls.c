@@ -116,6 +116,7 @@ uint_8 AwaitKeyPress()
             found_suitable_key = TRUE;
 
         }
+        SDL_Delay(10);
 
     }
     return control;

@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <time.h>
+#include <math.h>
 
 #include "SDL.h"
 #include "SDL_events.h"
@@ -28,34 +30,37 @@ void EventLoop()
 
 }
 
-void InitRefreshRate() 
+void Init(int argc, char **argv) 
 {
 
-    SDL_DisplayMode mode;
-    if (SDL_GetDisplayMode(0, 0, &mode) == 0) {
-
-        refresh_rate = (int)((1.0f/((float)mode.refresh_rate)) * 100.0f);
-        
-    }
-    DebugLog("refresh_rate = %dhz\n", mode.refresh_rate);
+    InitializeMemory(argc, argv);
+    InitializeCPU();
+    InitDraw();
+    InitSounds();
 
 }
 
 int main(int argc, char **argv) 
 {
 
-    InitRefreshRate();
-    InitializeMemory(argc, argv);
-    InitializeCPU();
-    InitDraw();
-    InitSounds();
+    Init(argc, argv);
+
+    struct timespec current_time, delay_time;
+    clock_gettime(CLOCK_REALTIME, &delay_time);
 
     while (!end_program){
 
+        clock_gettime(CLOCK_REALTIME, &current_time);
+
         ExecuteNextOpCode();
         EventLoop();
-        DrawScreen();
         ControlsLoop();
+
+        if (labs(current_time.tv_nsec - delay_time.tv_nsec) >= 13000000 || current_time.tv_sec - delay_time.tv_sec != 0) {
+
+            DrawScreen();
+
+        }
 
     }
 
