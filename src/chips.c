@@ -16,6 +16,8 @@
 SDL_Event event;
 static BOOL end_program = FALSE;
 static int refresh_rate = 1;
+static struct timespec draw_time;
+static struct timespec opcode_time;
 
 void EventLoop() 
 {
@@ -37,6 +39,35 @@ void Init(int argc, char **argv)
     InitializeCPU();
     InitDraw();
     InitSounds();
+    clock_gettime(CLOCK_REALTIME, &draw_time);
+    clock_gettime(CLOCK_REALTIME, &opcode_time);
+
+}
+
+void HandleDrawScreen() 
+{
+
+    
+    if (diff_time_with_now_in_mill(draw_time) >= 17) {
+
+        DrawScreen();
+        clock_gettime(CLOCK_REALTIME, &draw_time);
+
+    }
+
+}
+
+void HandleOpcodeTimer() 
+{
+
+    if (diff_time_with_now_in_mill(opcode_time) >= 2) {
+
+        ControlsLoop();
+        ExecuteNextOpCode();
+        EventLoop();
+        clock_gettime(CLOCK_REALTIME, &opcode_time);
+
+    }
 
 }
 
@@ -44,23 +75,10 @@ int main(int argc, char **argv)
 {
 
     Init(argc, argv);
-
-    struct timespec current_time, delay_time;
-    clock_gettime(CLOCK_REALTIME, &delay_time);
-
     while (!end_program){
 
-        clock_gettime(CLOCK_REALTIME, &current_time);
-
-        ExecuteNextOpCode();
-        EventLoop();
-        ControlsLoop();
-
-        if (labs(current_time.tv_nsec - delay_time.tv_nsec) >= 13000000 || current_time.tv_sec - delay_time.tv_sec != 0) {
-
-            DrawScreen();
-
-        }
+        HandleOpcodeTimer();
+        HandleDrawScreen();
 
     }
 
