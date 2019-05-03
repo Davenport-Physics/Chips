@@ -25,3 +25,9 @@ string(APPEND CMAKE_C_FLAGS_RELEASE " -O3")
 
 add_executable(chips ${sources} ${headers})
 target_link_libraries(chips ${SDL2_LIBRARIES} "-lSDL2_mixer")
+
+add_custom_command(TARGET chips PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   ${PROJECT_SOURCE_DIR}/sounds
+                   ${PROJECT_BINARY_DIR}/sounds
+)
