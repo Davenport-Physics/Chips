@@ -48,7 +48,7 @@ void HandleDrawScreenAndInput()
 {
 
     
-    if (diff_time_with_now_in_mill(draw_time) >= 17) {
+    if (diff_time_with_now_in_mill(draw_time) >= 16) {
 
         DrawScreen();
         clock_gettime(CLOCK_REALTIME, &draw_time);
@@ -60,7 +60,7 @@ void HandleDrawScreenAndInput()
 void HandleOpcodeTimer() 
 {
 
-    if (diff_time_with_now_in_mill(opcode_time) >= 2) {
+    if (diff_time_with_now_in_mill(opcode_time) >= 4) {
 
         ExecuteNextOpCode();
         EventLoop();
