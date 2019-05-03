@@ -83,7 +83,14 @@ uint_8 GetTranslationOfScancodeIfAny(SDL_Scancode code)
 BOOL IsKeyPressed(uint_16 control) 
 {
 
-    return pressed[control].was_pressed;
+    if (pressed[control].was_pressed) {
+
+        pressed[control].was_pressed = FALSE;
+        return TRUE;
+        
+    }
+
+    return FALSE;
 
 }
 

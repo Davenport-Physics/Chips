@@ -44,7 +44,7 @@ void Init(int argc, char **argv)
 
 }
 
-void HandleDrawScreen() 
+void HandleDrawScreenAndInput() 
 {
 
     
@@ -62,7 +62,6 @@ void HandleOpcodeTimer()
 
     if (diff_time_with_now_in_mill(opcode_time) >= 2) {
 
-        ControlsLoop();
         ExecuteNextOpCode();
         EventLoop();
         clock_gettime(CLOCK_REALTIME, &opcode_time);
@@ -77,8 +76,9 @@ int main(int argc, char **argv)
     Init(argc, argv);
     while (!end_program){
 
+        ControlsLoop();
         HandleOpcodeTimer();
-        HandleDrawScreen();
+        HandleDrawScreenAndInput();
 
     }
 

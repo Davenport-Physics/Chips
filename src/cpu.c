@@ -139,10 +139,7 @@ void InitializeCPU()
 void HandleDecrementingDelayTimer() 
 {
 
-    struct timespec tp;
-    clock_gettime(CLOCK_REALTIME, &tp);
-
-    if (labs(tp.tv_nsec - delay_clock.tv_nsec) >= 13000000 || tp.tv_sec - delay_clock.tv_sec != 0) {
+    if (diff_time_with_now_in_mill(delay_clock) >= 13) {
 
         clock_gettime(CLOCK_REALTIME, &delay_clock);
         delay_timer--;

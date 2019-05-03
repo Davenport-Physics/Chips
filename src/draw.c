@@ -104,8 +104,9 @@ void SetBit(uint_8 y, uint_8 x, uint_8 bit)
     uint_8 was_set     = display_bits[y][x];
     display_bits[y][x] = display_bits[y][x] ^ bit;
     DebugLog("bit = %d, display_bits = %d, x = %d, y = %d\n", bit, display_bits[y][x], x, y);
-    if (was_set != display_bits[y][x]) {
+    if (was_set && was_set != display_bits[y][x]) {
 
+        DebugLog("Collision at x = %d, y = %d\n", x, y);
         collision_detected = 1;
 
     }
