@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <time.h>
 
 #include "SDL.h"
 #include "SDL_events.h"
@@ -19,7 +18,6 @@ typedef struct control_conversion {
 typedef struct controls_pressed {
 
     BOOL was_pressed;
-    clock_t timestamp;
 
 } controls_pressed;
 
@@ -44,7 +42,6 @@ static const controls convert[16] =
 };
 
 static controls_pressed pressed[16];
-static unsigned int CLOCKS_PER_MS = CLOCKS_PER_SEC / 1000;
 
 SDL_Scancode PollForScancode() 
 {
@@ -86,21 +83,7 @@ uint_8 GetTranslationOfScancodeIfAny(SDL_Scancode code)
 BOOL IsKeyPressed(uint_16 control) 
 {
 
-    if (pressed[control].was_pressed) {
-
-        clock_t current_clock_time = clock();
-        if ((current_clock_time - pressed[control].timestamp)/(CLOCKS_PER_MS) <= 15) {
-
-            return TRUE;
-
-        } else {
-
-            pressed[control].was_pressed = FALSE;
-
-        }
-
-    }
-    return FALSE;
+    return pressed[control].was_pressed;
 
 }
 
@@ -126,16 +109,9 @@ uint_8 AwaitKeyPress()
 void ProcessScanCodeForTimestamp(SDL_Scancode code) 
 {
 
-    for (size_t i = 0; i < 16;i++) {
-
-        if (convert[i].code == code) {
-
+    for (size_t i = 0; i < 16;i++)
+        if (convert[i].code == code)
             pressed[i].was_pressed = TRUE;
-            pressed[i].timestamp   = clock();
-
-        }
-
-    }
 
 }
 
@@ -143,15 +119,12 @@ void ControlsLoop()
 {
 
     const uint_8 *key_states = PollForKeyStates();
-    for (size_t i = 0; i < 16; i++) {
+    for (size_t i = 0; i < 16; i++)
+        pressed[i].was_pressed = FALSE;
 
-        if (key_states[convert[i].code]) {
-
+    for (size_t i = 0; i < 16; i++)
+        if (key_states[convert[i].code])
             ProcessScanCodeForTimestamp(convert[i].code);
-
-        }
-
-    }
 
 }
 
