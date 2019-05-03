@@ -4,6 +4,15 @@ project(Chips)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/Modules")
 
 find_package(SDL2 REQUIRED)
+if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+	FIND_PATH(SDL2_MIXER_INCLUDE_DIR SDL_mixer.h 
+		PATHS 
+		/usr/local/Cellar/sdl2_mixer
+		/usr/local/include/SDL2)
+	message(STATUS "SDL2_MIXER_DIR = ${SDL2_MIXER_INCLUDE_DIR}")
+	include_directories(${SDL2_MIXER_INCLUDE_DIR})
+endif()
+
 include_directories(${SDL2_INCLUDE_DIRS})
 message(STATUS "SDL2_DIR = ${SDL2_INCLUDE_DIRS}")
 
