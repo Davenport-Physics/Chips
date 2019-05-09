@@ -95,13 +95,8 @@ uint_8 CollisionDetected()
 void SetBit(uint_8 y, uint_8 x, uint_8 bit) 
 {
 
-    if (y >= 32 || x >= 64) {
-
-        DebugLog("Attempt to conduct an out of bounds access.\n");
-        DebugLog("x = %d, y = %d\n", x, y);
-        return;
-
-    }
+    y %= 32;
+    x %= 64;
 
     uint_8 was_set     = display_bits[y][x];
     display_bits[y][x] = display_bits[y][x] ^ bit;
